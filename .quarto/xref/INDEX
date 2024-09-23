@@ -1,0 +1,26 @@
+{
+  "index.qmd": {
+    "index.html": "ebfbc726"
+  },
+  "intro.qmd": {
+    "intro.html": "6c1b293c"
+  },
+  "summary.qmd": {
+    "summary.html": "c2958110"
+  },
+  "references.qmd": {
+    "references.html": "00e6fca4"
+  },
+  "Illustrative Examples in practice.qmd": {
+    "Illustrative Examples in practice.html": "0ad6a03b"
+  },
+  "Bayesian Estimation for Linear Regression Problem.qmd": {
+    "Bayesian Estimation for Linear Regression Problem.html": "014736ea"
+  },
+  "Bayesian Estimation to Nonlinear Regression Problem.qmd": {
+    "Bayesian Estimation to Nonlinear Regression Problem.html": "cf1d6eb2"
+  },
+  "Bayesian connection to Statistical Regularization.qmd": {
+    "Bayesian connection to Statistical Regularization.html": "5bd6095e"
+  }
+}

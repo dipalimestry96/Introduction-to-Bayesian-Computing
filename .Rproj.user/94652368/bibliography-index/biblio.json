@@ -1,0 +1,218 @@
+{
+    "sources": [
+        {
+            "author": [
+                {
+                    "family": "Casella",
+                    "given": "George"
+                },
+                {
+                    "family": "Berger",
+                    "given": "Roger L."
+                }
+            ],
+            "collection-title": "Duxbury advanced series",
+            "edition": "Second",
+            "id": "casella_berger_2002",
+            "issued": {
+                "date-parts": [
+                    [
+                        2002
+                    ]
+                ]
+            },
+            "publisher": "Cengage Learning",
+            "publisher-place": "India Edition",
+            "title": "Statistical inference",
+            "type": "book"
+        },
+        {
+            "author": [
+                {
+                    "family": "Wasserman",
+                    "given": "Larry"
+                }
+            ],
+            "id": "wasserman_2004",
+            "issued": {
+                "date-parts": [
+                    [
+                        2004
+                    ]
+                ]
+            },
+            "publisher": "Springer-Verlag New York, Inc.",
+            "publisher-place": "New York",
+            "title": "All of statistics: A concise course in statistical inference",
+            "title-short": "All of statistics",
+            "type": "book"
+        },
+        {
+            "URL": "https://CRAN.R-project.org/package=invgamma",
+            "author": [
+                {
+                    "family": "Kahle",
+                    "given": "David"
+                },
+                {
+                    "family": "Stamey",
+                    "given": "James"
+                }
+            ],
+            "id": "invgamma",
+            "issued": {
+                "date-parts": [
+                    [
+                        2017
+                    ]
+                ]
+            },
+            "note": "R package version 1.1",
+            "title": "Invgamma: The inverse gamma distribution",
+            "title-short": "Invgamma",
+            "type": "book"
+        },
+        {
+            "DOI": "10.18637/jss.v080.i01",
+            "author": [
+                {
+                    "family": "Bürkner",
+                    "given": "Paul-Christian"
+                }
+            ],
+            "container-title": "Journal of Statistical Software",
+            "id": "brms",
+            "issue": "1",
+            "issued": {
+                "date-parts": [
+                    [
+                        2017
+                    ]
+                ]
+            },
+            "page": "1-28",
+            "title": "brms: An R package for Bayesian multilevel models using Stan",
+            "title-short": "brms",
+            "type": "article-journal",
+            "volume": "80"
+        },
+        {
+            "URL": "https://mc-stan.org/rstanarm/",
+            "author": [
+                {
+                    "family": "Goodrich",
+                    "given": "Ben"
+                },
+                {
+                    "family": "Gabry",
+                    "given": "Jonah"
+                },
+                {
+                    "family": "Ali",
+                    "given": "Imad"
+                },
+                {
+                    "family": "Brilleman",
+                    "given": "Sam"
+                }
+            ],
+            "id": "rstanarm",
+            "issued": {
+                "date-parts": [
+                    [
+                        2024
+                    ]
+                ]
+            },
+            "note": "R package version 2.32.1",
+            "title": "Rstanarm: Bayesian applied regression modeling via Stan.",
+            "title-short": "Rstanarm",
+            "type": ""
+        },
+        {
+            "URL": "https://www.stats.ox.ac.uk/pub/MASS4/",
+            "author": [
+                {
+                    "family": "Venables",
+                    "given": "W. N."
+                },
+                {
+                    "family": "Ripley",
+                    "given": "B. D."
+                }
+            ],
+            "edition": "Fourth",
+            "id": "MASS",
+            "issued": {
+                "date-parts": [
+                    [
+                        2002
+                    ]
+                ]
+            },
+            "note": "ISBN 0-387-95457-0",
+            "publisher": "Springer",
+            "publisher-place": "New York",
+            "title": "Modern applied statistics with s",
+            "type": "book"
+        },
+        {
+            "URL": "https://CRAN.R-project.org/package=ISLR",
+            "author": [
+                {
+                    "family": "James",
+                    "given": "Gareth"
+                },
+                {
+                    "family": "Witten",
+                    "given": "Daniela"
+                },
+                {
+                    "family": "Hastie",
+                    "given": "Trevor"
+                },
+                {
+                    "family": "Tibshirani",
+                    "given": "Rob"
+                }
+            ],
+            "id": "ISLR",
+            "issued": {
+                "date-parts": [
+                    [
+                        2021
+                    ]
+                ]
+            },
+            "note": "R package version 1.4",
+            "title": "ISLR: Data for an introduction to statistical learning with applications in r",
+            "title-short": "ISLR",
+            "type": "book"
+        },
+        {
+            "URL": "https://CRAN.R-project.org/package=leaps",
+            "author": [
+                {
+                    "dropping-particle": "based on",
+                    "family": "Fortran code by Alan Miller",
+                    "given": "Thomas Lumley"
+                }
+            ],
+            "id": "leaps",
+            "issued": {
+                "date-parts": [
+                    [
+                        2024
+                    ]
+                ]
+            },
+            "note": "R package version 3.2",
+            "title": "Leaps: Regression subset selection",
+            "title-short": "Leaps",
+            "type": "book"
+        }
+    ],
+    "project_biblios": [
+        "references.bib"
+    ]
+}

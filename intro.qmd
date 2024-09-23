@@ -1,0 +1,49 @@
+# Introduction
+
+**Bayesian statistics** has emerged as a powerful tool in the realm of statistical analysis, providing a flexible framework for making inferences under uncertainty. The foundation of Bayesian methods dates back to the $18^\text{th}$ century when Reverend Thomas Bayes proposed a theorem for updating beliefs with new evidence. This approach offers a probabilistic paradigm that allows the incorporation of prior knowledge, leading to more informed decision-making.
+
+Bayesian analysis, rooted in Bayesian statistical methods, aims to make inferences about **parameters**. Parameters are the quantities we seek to estimate or infer from our data. They represent the underlying characteristics or properties of the system or process under investigation. For instance, in a model predicting the probability of species extinction, the parameter of interest might be the actual likelihood of such an extinction event occurring. Mathematically, the parameter(s) is denoted by $\theta$.
+
+At the heart of Bayesian analysis are three fundamental components: **prior**, **likelihood**, and **posterior**. These elements work together to form a cohesive system that informs probabilistic reasoning. Let us understand the what exactly these terms are in Bayesian statistics;
+
+### Prior {.unnumbered}
+
+The **prior distribution** or simply **prior** is a probability distribution that represents our initial beliefs or knowledge about the parameters before observing any data. It reflects what we think the values of the parameters could be based on prior experience, expert knowledge, or sometimes, a deliberate choice to remain neutral. Priors can take many forms, from non-informative or vague, which show that we have little or no prior knowledge about the parameter, to informative, which incorporate strong prior knowledge. In this book we denote the prior distribution of parameter $\theta$ by $\pi(\theta)$.
+
+### Likelihood {.unnumbered}
+
+The **likelihood function** is derived from the data and describes the probability of the observed data given the model parameters. It reflects how well different parameter values explain the observed data. In Bayesian inference, the likelihood is combined with the prior to update our beliefs about the parameters.
+
+Mathematically, if we denote the parameter of interest by $\theta$ and the observed data by $y$, the likelihood function is given by $p(y|\theta)$, which measures the plausibility of $\theta$ given the data.
+
+### Posterior {.unnumbered}
+
+The **posterior distribution** denoted by $p(\theta|y)$ is the result of updating the prior with the observed data through the likelihood. It is the core output of a Bayesian analysis and represents our updated beliefs about the parameter(s) after accounting for the data.
+
+Using Bayes' Theorem, the posterior is expressed as: $$ p(\theta|y) = \frac{p(y|\theta)\pi(\theta)}{p(y)},$$ where $p(\theta|y)$ is the posterior, $p(y|\theta)$ is likelihood, $\pi(\theta)$ is the prior, and $p(y)$ is the marginal likelihood, which normalize the posterior distribution. The posterior reflects both the information contained in the prior and the evidence from the data, thus offering a balanced view of parameter uncertainty.
+
+### Improper prior {.unnumbered}
+
+In some cases, a prior distribution $\pi(\theta)$ may not integrate to one, which is referred to as an improper prior: $$
+\int_{-\infty}^{\infty} \pi(\theta) \, d\theta = \infty
+$$ These priors are often used when we want a non-informative or vague prior, such as in situations where no clear prior knowledge exists. Improper priors can sometimes lead to improper posteriors, but when handled correctly, they can still be useful, particularly when the likelihood is highly informative.
+
+For example, a flat prior over an infinite range is an improper prior because it doesn't integrate to a finite value. However, it is often employed when the intention is to let the data dominate the inference. Let us understand it through one example;
+
+A common example of an improper prior is the \textbf{uniform prior} over the entire real line:
+
+$$\pi(\theta) = 1$$
+
+for all $\theta \in \mathbb{R}$. This prior is "improper" because:
+
+$$ \int_{-\infty}^{\infty} \pi(\theta) \, d\theta = \int_{-\infty}^{\infty} 1 \, d\theta = \infty. $$ For the posterior distribution to be proper, the integral of the posterior distribution over all possible values of $\theta$ must be finite and equal to one:
+
+$$ \int_{-\infty}^{\infty} \pi(\theta | y) \, d\theta = 1. $$
+
+If the likelihood function $P(y | \theta)$ is such that it ensures this condition, then the improper prior can be used effectively.
+
+### Conjugate prior {.unnumbered}
+
+Given a likelihood function $p(y \mid \theta)$, if the posterior distribution $p(\theta \mid y)$ belongs to the same family of probability distributions as the prior distribution $p(\theta)$, then the prior and posterior are referred to as conjugate distributions with respect to that likelihood function. In this case, the prior is called a **conjugate prior** for the likelihood function $p(y \mid \theta)$.
+
+In this introductory chapter, we have explored the foundational concepts of Bayesian statistics, including the role of parameters, prior distributions, likelihoods, and the posterior distribution. We have also introduced the idea of improper and conjugate priors. With these core principles in mind, we are now ready to move from theory to practice.

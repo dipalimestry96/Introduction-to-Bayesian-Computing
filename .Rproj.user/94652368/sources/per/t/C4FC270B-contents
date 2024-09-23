@@ -1,0 +1,180 @@
+---
+format:
+  html:
+    html-math-method: mathjax
+    include-in-header:
+      - text: |
+          <script>
+          window.MathJax = {
+            tex: {
+              tags: 'all',
+              labels: {
+                section: true
+              }
+            }
+          };
+          </script>
+    number-sections: true
+---
+
+# Bayesian connection to Statistical Regularization
+
+First we outline the concepts of linear regression. We denote the response variable by $Y$ and the set of predictor variables by $X_1, X_2,\cdots, X_p$, $p$ being the number of predictors which are also synonymously written as explanatory variables, independent variables, covariates, regressors etc. The true relationship between the response and the predictors can be approximated by a regression function $f$, so that the equation
+
+\begin{equation}\label{eq1}
+    Y = f(X_1, X_2,\cdots, X_p) + \epsilon
+\end{equation}
+
+is a valid statistical model for the population of interest. Usually, $f$ is a fixed but unknown function of $X_1, X_2,\cdots, X_p$ which represents the systematic variation of $Y$ explained by the predictors. The unexplained component, denoted by $\epsilon$, is assumed to be a random error (independent of the predictors) with mean zero. This gives a measure of discrepancy of the approximation by the function $f$.
+
+Under the multiple regression set up, $f$ is replaced by a linear function of the predictors, represented as 
+
+$$Y = \beta_0 + \beta_1 X_1 + \cdots+\beta_p X_p + \epsilon,$$
+
+where $\beta_0$ is the intercept term and $\beta_j$ gives the contributions of $X_j$ for $j=1,\cdots,n$ in explaining the variation of $Y$. For convenience, we adopt the matrix notation and represent the data set up. We have the continuous response $\mathbf{Y} = \left(y_1,\cdots,y_n\right)' \in \mathbb{R}^n$ and the $n$ data values $\left(x_{ij}\right)_{i=1}^n$ are available on each $X_j$, $j=1,2,\cdots, p$. The regression equation in matrix form written as 
+
+\begin{equation}\label{eq2}
+    \mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{e}
+\end{equation}
+
+where $\mathbf{X}$ is an $n\times (p+1)$ design matrix with entries in the first column being 1 (if intercept included) otherwise it is $n\times p$ order matrix with $x_{ij}$ denotes the $i$th observation corresponding to the $j$th variable. $\boldsymbol{\beta}$ be the vector of regression coefficients of order $(p+1)\times 1$ and $\mathbf{e} = (e_1,e_2,\cdots,e_n)' \in \mathbb{R}^n$ is the vector of errors. By using the least squares theory, the residual sum of squares, 
+
+$$\mathbf{e'e} = \sum_{i=1}^n\left(y_i - \beta_0 - \sum_{j=1}^p\beta_j x_{ij}\right)^2 =\mathbf{RSS}(\boldsymbol{\beta}),$$
+
+is minimized with respect to $\boldsymbol{\beta}$. 
+Solving the normal equations, the estimates of $\boldsymbol{\beta}$ is obtained as $\hat{\boldsymbol{\beta}} = \mathbf{\left(X'X\right)^{-1}X'Y}$. Using the notion of $l_2-\mbox{norm}$, one can write as 
+
+\begin{equation}\label{est_beta}
+    \hat{\boldsymbol{\beta}} = \mbox{argmin}_{\boldsymbol{\beta}}\left(\|\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}\|_2^2\right),
+\end{equation} 
+
+where $\|\mathbf{u}\|_2^2 = \sum_{i=1}^n u_i^2$ for a vector $\mathbf{u} \in \mathbb{R}^n$. $\hat{\boldsymbol{\beta}}$ is an unbiased and consistent estimator of $\boldsymbol{\beta}$. The normal equations for the above minimization problem is given by
+
+$$\mathbf{\left(X'X\right)}\boldsymbol{\beta} = \mathbf{X'Y}.$$
+
+If $\mathbf{\left(X'X\right)}$ has determinant zero, then the unique solution for the system of equations can not be obtained. If the matrix is ill-conditioned that is the determinant is very small, then variance for estimated coefficients are very large making the estimates unreliable. This is a common case in many real life data sets where high degree of correlation exits between two variables. If any particular predictor can be closely approximated by a linear combination of two or more other predictors, then also the matrix $\mathbf{\left(X'X\right)}$ is nearly singular. Such a situation is called multicollinearity and must be taken care of before any modeling assignment.
+
+To tackle the multicollinearity problem, various shrinkage methods have been proposed in the literature. Ridge regression deals with solving the normal equations of the form
+
+$$\left(\mathbf{X'X}+\lambda \mathbf{I}\right)\boldsymbol{\beta} = \mathbf{X'Y},$$
+
+where $\lambda\ge 0$ is called the shrinkage parameter. Because of the additional parameter $\lambda$ the coefficient estimates $\hat{\boldsymbol{\beta}}$ has lower variance but they are no longer unbiased. Basically, instead of minimizing the residual sum of squares, ridge regression minimizes a slightly different quantity, given by $\mathbf{RSS}(\boldsymbol{\beta})+ \lambda \sum_{j=1}^p \beta_j^2$. The coefficient estimates can be written using $l_2-\mbox{norm}$ as 
+
+\begin{equation}\label{est_beta_ridge}
+    \hat{\boldsymbol{\beta}_{\lambda}^R} = \mbox{argmin}_{\boldsymbol{\beta}} \left(\|\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}\|_2^2 + \lambda \|\boldsymbol{\beta}\|_2^2\right).
+\end{equation} 
+
+The term $\lambda \sum_{j=1}^p \beta_j^2$, referred as shrinkage penalty, is small when $\beta_1,\cdots, \beta_p$ are close to zero. For $\lambda = 0$, the procedure is equivalent to the ordinary least squares (OLS) regression. For $\lambda \rightarrow \infty$, the influence of shrinkage penalty increases and the components of $\hat{\boldsymbol{\beta}_{\lambda}^R}$ will approach zero and its successful implementation is guaranteed by the bias-variance tradeoff.
+
+Model selection methods such as forward, backward and mixed selection give the model that involves a subset of all the predictors. These techniques can be conveniently performed using R software for statistical computing. The packages $\texttt{ISLR}$ [@ISLR], $\texttt{leaps}$ [@leaps], $\texttt{MASS}$ [@MASS] can be used for this purpose and different criteria such as $R^2$, AIC etc. can be utilized for the model selection. Unlike these methods, ridge regression includes all $p$ predictors in the model; the penalty term reduces many coefficients to very small values, but will not set them exactly equal to zero. This is challenging for interpretation of the results in high dimension when the number of predictors is very large. This shortcoming is overcome by the method of lasso regression by minimizing the quantity $\mathbf{RSS}(\boldsymbol{\beta})+ \lambda \sum_{j=1}^p|\beta_j|$, which considers an $l_1-$norm penalty instead of $l_2-$norm penalty. Thus using $l_1-\mbox{norm}$ notation, the coefficient estimates can be written as
+
+\begin{equation}\label{est_beta_lasso}
+    \hat{\boldsymbol{\beta}_{\lambda}^L} = \mbox{argmin}_{\boldsymbol{\beta}} \left(\|\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}\|_2^2 + \lambda \|\boldsymbol{\beta}\|_1\right)
+\end{equation}
+
+where $\|\mathbf{u}\|_1 = \sum_{i=1}^n |u_i|$ for a vector $\mathbf{u} \in \mathbb{R}^n$. Because of the $l_1$ penalty some of the coefficients are forced to be equal to zero for large $\lambda$. Thus, like the best subset selection methods, lasso also provides variable selection method. More precisely the lasso regression falls between best subset selection method and the ridge regression method and has some nice statistical properties from both techniques.
+
+Ridge regression has a close connection to Bayesian linear regression. Bayesian linear regression assumes that the parameters $\boldsymbol{\beta}$ and $\sigma^2$ (known) to be the random variables, while at the same time considering $\mathbf{X}$ and $\mathbf{Y}$ as fixed. We shall show that if we assume the the prior distribution for $\boldsymbol{\beta}$ as follows: $\beta_1, \beta_2,\cdots,\beta_p$ are independent and identically distributed according to a normal distribution of mean zero and variance $c$, then the posterior distribution of $\boldsymbol{\beta}$ is also normal and the ridge regression estimate is both the mean and the mode for $\boldsymbol{\beta}$ under this posterior distribution. We start with the linear regression setting again so that, the exact calculations follows naturally:
+
+\begin{equation}
+  Y_{i} = \beta_{0} + \sum_{j=1}^p\beta_{j}X_{ij}+\epsilon_{i},~~~i = 1,2,\cdots,n.
+\end{equation} 
+
+$\epsilon_{i}\sim \mathcal{N}(0,\sigma^2),~ i=1,2,\cdots,n$, $\hat{\boldsymbol{\beta}} = (\hat{\beta_1},\cdots,\hat{\beta_p})'$, $\mbox{E}_{\boldsymbol{\beta}}\hat{\boldsymbol{\beta}} = \boldsymbol{\beta}$, $\mbox{Var}_{\boldsymbol{\beta}}(\hat{\boldsymbol{\beta}}) = \sigma^2 (\mathbf{X}'\mathbf{X})^{-1}$, where $\hat{\beta} =(\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Y}$, $\mathbf{Y} = (y_1,y_2,\cdots,y_n)'$. In matrix notation, we write it as
+
+$$\mathbf{Y} = \beta_0 \mathbf{1}_n + \mathbf{X}\boldsymbol{\beta} + \mathbf{e},$$ 
+
+where $\mathbf{1}_n$ is a vector of order $n\times 1$ whose each entry is equal to 1. Note that we do not have any prior distribution on the intercept term $\beta_0$. Since $\beta_{j}$'s ($j=1,2,\cdots,p$) are independent and identically distributed normal random variables with mean $0$ and variance $c$, the the joint probability density function can be easily written as a multivariate normal distribution as follows: 
+
+\begin{equation}
+\pi(\boldsymbol{\beta}) = \left(\frac{1}{\sqrt{2\pi c}}\right)^p e^{-\frac{\boldsymbol{\beta}'\boldsymbol{\beta}}{2c}}, ~~\boldsymbol{\beta}\in \mathbb{R}^p,
+\end{equation}
+
+and the marginal prior densities are given by $\pi(\beta_j) = \frac{1}{\sqrt{2\pi c}}e^{-\frac{\beta_j^2}{2c}},~ j =1,2,\cdots,n$. Using a Hierarchical Bayesian set up the regression model can be written as 
+
+\begin{eqnarray*}
+Y_i|\boldsymbol{\beta} &\sim& \mathcal{N}\left(\beta_0 + \sum_{j=1}^p\beta_{j}x_{ij},\sigma^2\right), i = 1,2,\cdots,n,~\mbox{independent},\\
+\boldsymbol{\beta} &\sim & \pi(\boldsymbol{\beta}).
+\end{eqnarray*} 
+
+The posterior distribution of $\boldsymbol{\beta}$ is given by,
+
+\begin{eqnarray*}
+\pi(\boldsymbol{\beta}|y) = \frac{f(\boldsymbol{\beta},y)}{f_{\mathbf{Y}}(y)} = \frac{f(y|\boldsymbol{\beta})\pi(\boldsymbol{\beta})}{f_{\mathbf{Y}}(y)},
+\end{eqnarray*}
+
+The marginal distribution of $\mathbf{Y}$ is given by,
+
+\begin{eqnarray}\label{eq:one}
+f_{\mathbf{Y}}(y) &=& \int_{\mathbb{R}^p} f(y|\boldsymbol{\beta}) \pi(\boldsymbol{\beta})\mathrm{d}\boldsymbol{\beta} \\
+&=&\int_{\mathbb{R}^p}\frac{1}{(\sqrt{2\pi}\sigma)^n}e^{-\frac{\sum_{i=1}^n\left(y_{i}-\beta_0-\sum_{j=1}^p\beta_{j}x_{ij}\right)^2}{2\sigma^2}}\frac{1}{(\sqrt{2\pi c})^p}e^{-\frac{\sum_{j=1}^p\beta_{j}^2}{2c}} \mathrm{d}\boldsymbol{\beta} \notag \\
+&=&\frac{1}{(\sqrt{2\pi}\sigma)^n}\frac{1}{(\sqrt{2\pi c})^p}\int_{\mathbb{R}^p} e^{-\frac{1}{2}\left[\frac{(y-\beta_0 \mathbf{1}_n - \mathbf{X}\boldsymbol{\beta})'(y-\beta_0 \mathbf{1}_n - \mathbf{X}\boldsymbol{\beta})}{\sigma^2}+\frac{\boldsymbol{\beta}'\boldsymbol{\beta}}{c}\right]} \mathrm{d}\boldsymbol{\beta}
+\end{eqnarray} Now consider the exponent part in the previous equation and simplify it, \begin{eqnarray}
+2\times \mbox{Exponent}&= &\frac{(\mathbf{Y}-\beta_0\mathbf{1}_n-\mathbf{X}\boldsymbol{\beta})'(\mathbf{Y}-\beta_0\mathbf{1}_n-\mathbf{X}\boldsymbol{\beta})}{\sigma^2} + \frac{\boldsymbol{\beta}'\boldsymbol{\beta}}{c}\\
+&=&\frac{(\mathbf{Y}'-\beta_0\mathbf{1}_n'-\boldsymbol{\beta}'\mathbf{X}')(\mathbf{Y}-\beta_0\mathbf{1}_n-\mathbf{X}\boldsymbol{\beta}) }{\sigma^2} + \frac{\boldsymbol{\beta}' \boldsymbol{\beta}}{c} \notag \\
+&=& \frac{\mathbf{Y}'\mathbf{Y}-2\beta_0\mathbf{1}_n'\mathbf{Y}-2\boldsymbol{\beta}'\mathbf{X}'\mathbf{Y}+\beta_0^2+2\boldsymbol{\beta}'\mathbf{X}'\beta_0\mathbf{1}_n+\boldsymbol{\beta}'\mathbf{X}'\mathbf{X}\boldsymbol{\beta}}{\sigma^2} + \frac{\boldsymbol{\beta}'\boldsymbol{\beta}}{c} \notag \\
+&=&\frac{\mathbf{Y}'\mathbf{Y}}{\sigma^2}-\frac{2\beta_0\mathbf{1}_n'\mathbf{Y}}{\sigma^2}+\frac{\beta_0^2}{\sigma^2}+\boldsymbol{\beta}'\left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)\beta -2\boldsymbol{\beta}'\mathbf{X}'\left(\frac{\mathbf{Y}}{\sigma^2}-\frac{\beta_0\mathbf{1}_n}{\sigma^2}\right)\label{eq:two}
+\end{eqnarray}
+
+We write the above expression in the form $(\boldsymbol{\beta}-\mu)'\Sigma^{-1}(\boldsymbol{\beta}-\mu) +$ constant containing term $\mathbf{Y}$ and $\mathbf{X}'s$. To do that we utilize the following expression for the purpose of matching similar terms: $$(\mathbf{X}-\mu)'\Sigma^{-1}(\mathbf{X}-\mu) =\mathbf{X}'\Sigma^{-1}\mathbf{X}-2\mathbf{X}'\Sigma^{-1}\mu+\mu'\Sigma^{-1}\mu.$$ Therefore by equation \eqref{eq:one} 
+
+\begin{eqnarray}
+& &\frac{(\mathbf{Y}-\beta_0\mathbf{1}_n-\mathbf{X}\boldsymbol{\beta})'(\mathbf{Y}-\beta_0\mathbf{1}_n-\mathbf{X}\boldsymbol{\beta})}{\sigma^2} + \frac{\boldsymbol{\beta}'\boldsymbol{\beta}}{c} \\
+&=& \boldsymbol{\beta}'\left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)\boldsymbol{\beta}-2\boldsymbol{\beta}'\left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)\left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)^{-1} \left(\frac{\mathbf{X}'\mathbf{Y}}{\sigma^2}-\frac{\mathbf{X}'\beta_0\mathbf{1}_n}{\sigma^2}\right)+ \notag \\
+&\ &\left[\left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)^{-1}\left(\frac{\mathbf{X}'\mathbf{Y}}{\sigma^2}-\frac{\mathbf{X}'\beta_0\mathbf{1}_n}{\sigma^2}\right)\right]'\left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)  \notag \\
+&\ & \left[\left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)^{-1}\left(\frac{\mathbf{X}'\mathbf{Y}}{\sigma^2}-\frac{\mathbf{X}'\beta_0\mathbf{1}_n}{\sigma^2}\right)\right] \notag \\
+&\ & -\left[\left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)^{-1}\left(\frac{\mathbf{X}'\mathbf{Y}}{\sigma^2}-\frac{\mathbf{X}'\beta_0\mathbf{1}_n}{\sigma^2}\right)\right]'\left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)  \notag \\
+&\ & \left[\left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)^{-1}\left(\frac{\mathbf{X}'\mathbf{Y}}{\sigma^2}-\frac{\mathbf{X}'\beta_0\mathbf{1}_n}{\sigma^2}\right)\right] \notag \\
+&\ & + \frac{\mathbf{Y}'\mathbf{Y}}{\sigma^2}-\frac{2\beta_0\mathbf{1}_n'\mathbf{Y}}{\sigma^2}+\frac{\beta_0^2}{\sigma^2}. \label{eq:four}
+\end{eqnarray} Now, let \begin{equation*}
+\Sigma^{-1}=\sigma^2\left(\mathbf{X}'\mathbf{X}+\frac{\sigma^2}{c}\mathbf{I}_p\right)~~~\mbox{and}~~~\mu = \Sigma\mathbf{X}'\left(\mathbf{Y}-\beta_0\mathbf{1}_n\right),
+\end{equation*}
+
+then the Exponent becomes, 
+
+\begin{eqnarray}
+2 \times \mbox{Exponent}&=&\boldsymbol{\beta}'\Sigma^{-1}\boldsymbol{\beta}-2\boldsymbol{\beta}'\Sigma^{-1}\mu + \mu'\Sigma^{-1}\mu -\mu'\Sigma^{-1}\mu + \frac{\mathbf{Y}'\mathbf{Y}}{\sigma^2}-\frac{2\beta_0\mathbf{1}_n'\mathbf{Y}}{\sigma^2}+\frac{\beta_0^2}{\sigma^2} \notag \\
+&=&(\boldsymbol{\beta}-\mu)'\Sigma^{-1}(\boldsymbol{\beta}-\mu)-\mu'\Sigma^{-1}\mu + \frac{\mathbf{Y}'\mathbf{Y}}{\sigma^2}-\frac{2\beta_0\mathbf{1}_n'\mathbf{Y}}{\sigma^2}+\frac{\beta_0^2}{\sigma^2}. \label{eq:five}
+\end{eqnarray}
+
+Then equation \eqref{eq:one} becomes, 
+
+\begin{eqnarray}
+f_{\mathbf{Y}}(y) &=&\left(\sqrt{2\pi}\right)^p|\Sigma|^{p/2}\frac{1}{\left(\sqrt{2\pi}\sigma\right)^n}\frac{1}{\left(\sqrt{2\pi c}\right)^p}e^{-\frac{\mathbf{Y}'\mathbf{Y}}{2\sigma^{2}}}e^{\frac{\beta_0\mathbf{1}_n'\mathbf{Y}}{2\sigma^{2}}}e^{\frac{\beta_0^2}{2\sigma^{2}}}e^{\frac{\mu'\Sigma^{-1}\mu}{2}} \int_{\mathbb{R}^p}\frac{1}{(\sqrt{2\pi})^p}\frac{1}{|\Sigma|^{p/2}}e^{-\frac{1}{2}(\boldsymbol{\beta}-\mu)'\Sigma^{-1}(\boldsymbol{\beta}-\mu)} \mathrm{d}\boldsymbol{\beta} \notag \\
+&=&\left(\sqrt{2\pi}\right)^p|\Sigma|^{p/2}\frac{1}{\left(\sqrt{2\pi}\sigma\right)^n}\frac{1}{\left(\sqrt{2\pi c}\right)^p}e^{-\frac{\mathbf{Y}'\mathbf{Y}}{2\sigma^{2}}}e^{\frac{\beta_0\mathbf{1}_n'\mathbf{Y}}{2\sigma^{2}}}e^{\frac{\beta_0^2}{2\sigma^{2}}}e^{\frac{\mu'\Sigma^{-1}\mu}{2}}.\label{eq:six}
+\end{eqnarray}
+
+Note that the integrand is the density function of $\mbox{MVN}_p(\mu,\Sigma)$, hence integral out to be $1$, where,
+
+\begin{equation*}
+\mu = \left(\frac{\mathbf{X}'\mathbf{X}}{\sigma^2}+\frac{1}{c}\mathbf{I}_p\right)^{-1}\mathbf{X}'\left(\frac{\mathbf{Y}-\beta_0\mathbf{1}_n}{\sigma^2}\right)~~~\mbox{and}~~~ \Sigma = \sigma^2\left(\mathbf{X}'\mathbf{X}+\frac{\sigma^2}{c} \mathbf{I}_p\right)^{-1}.
+\end{equation*}
+
+The posterior distribution of $\boldsymbol{\beta}$ is,
+
+\begin{eqnarray*}
+\phi(\boldsymbol{\beta}|y)&=& \frac{f(\boldsymbol{\beta},y)}{f_{\mathbf{Y}}(y)} \\
+&=& \frac{f(y|\boldsymbol{\beta})\pi(\boldsymbol{\beta})}{f_{\mathbf{Y}}(y)} \\
+&=& \frac{\frac{1}{(\sqrt{2\pi}\sigma)^n}e^{-\frac{(\mathbf{Y}-\beta_0\mathbf{1}_n-\mathbf{X}\boldsymbol{\beta})'(\mathbf{Y}-\beta_0\mathbf{1}_n-\mathbf{X}\boldsymbol{\beta})}{\sigma^2} + \frac{\boldsymbol{\beta}'\beta}{c}}\frac{1}{(\sqrt{2\pi c})^p}e^{-\frac{\boldsymbol{\beta}' \boldsymbol{\beta}}{2c}}}{\left(\sqrt{2\pi}\right)^p|\Sigma|^{\frac{p}{2}}\frac{1}{\left(\sqrt{2\pi}\sigma\right)^n}\frac{1}{\left(\sqrt{2\pi c}\right)^p}e^{-\frac{\mathbf{Y}'\mathbf{Y}}{2\sigma^{2}}}e^{\frac{\beta_0\mathbf{1}_n\mathbf{Y}}{2\sigma^{2}}}e^{\frac{\beta_0^2}{2\sigma^2}}e^{\frac{\mu'\Sigma^{-1}\mu}{2}}} \\
+&=&\frac{1}{\left(\sqrt{2\pi}\right)^p}\frac{1}{|\Sigma|^{p/2}}e^{-\frac{1}{2}(\boldsymbol{\beta}-\mu)'\Sigma^{-1}(\boldsymbol{\beta}-\mu)}.
+\end{eqnarray*}
+
+So the posterior mean of $\boldsymbol{\beta}$ is given by
+
+\begin{eqnarray*}
+\mbox{E}(\boldsymbol{\beta}|y)
+&=&\hat{\boldsymbol{\beta}}_B \\
+&=&\left(\mathbf{X}'\mathbf{X} + \frac{\sigma^2}{c}\mathbf{I}_p\right)^{-1}\mathbf{X}'(\mathbf{Y}-\beta_0\mathbf{1}_n) \label{eq:seven}
+\end{eqnarray*}
+
+The main utility of ridge regression is to choose the predictors. We can start with the regression model in the following form:
+
+\begin{eqnarray*}
+\tilde{\mathbf{y}} = \mathbf{X}\boldsymbol{\beta} + \epsilon
+\end{eqnarray*}
+
+where $\tilde{\mathbf{y}} = \mathbf{Y}-\bar{y}\mathbf{1}_n$ and $\bar{y} = \frac{1}{n}\sum_{i=1}^{n}y_i$. Then 
+
+\begin{equation*}
+\hat{\boldsymbol{\beta}}_B = \left(\mathbf{X}'\mathbf{X} + \frac{\sigma^2}{c}\mathbf{I}_p\right)^{-1}\mathbf{X}'\tilde{\mathbf{y}}.
+\end{equation*}

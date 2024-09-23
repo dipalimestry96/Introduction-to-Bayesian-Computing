@@ -1,0 +1,5 @@
+"0",""
+"0","fun_logistic = function(x){ # Deterministic solution of the generalized logistic equation"
+"0","K/(1+((K/N1)^theta-1 )*exp(-rm*x*theta) )^(1/theta)"
+"0","}"
+"0","curve(fun_logistic, 0, n+1, add= TRUE, lwd=2)"

@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Bayesian Computing - 4&nbsp; Bayesian Estimation to Nonlinear Regression Problem</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./Bayesian connection to Statistical Regularization.html" rel="next">
+<link href="./Bayesian Estimation for Linear Regression Problem.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+window.MathJax = {
+  tex: {
+    tags: 'all',
+    labels: {
+      sections: true
+    }
+  }
+};
+</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Bayesian Estimation to Nonlinear Regression Problem.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian Estimation to Nonlinear Regression Problem</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Bayesian Computing</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Introduction-to-Bayesian-Computing.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Introduction-to-Bayesian-Computing.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Illustrative Examples in practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Illustrative Examples in practice</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Bayesian Estimation for Linear Regression Problem.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bayesian Estimation for Linear Regression Problem</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Bayesian Estimation to Nonlinear Regression Problem.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian Estimation to Nonlinear Regression Problem</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Bayesian connection to Statistical Regularization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bayesian connection to Statistical Regularization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-estimation_of_parameters" id="toc-sec-estimation_of_parameters" class="nav-link active" data-scroll-target="#sec-estimation_of_parameters"><span class="header-section-number">4.1</span> Estimation of Parameters</a></li>
+  <li><a href="#simulation-study" id="toc-simulation-study" class="nav-link" data-scroll-target="#simulation-study"><span class="header-section-number">4.2</span> Simulation study</a>
+  <ul class="collapse">
+  <li><a href="#data-generation" id="toc-data-generation" class="nav-link" data-scroll-target="#data-generation"><span class="header-section-number">4.2.1</span> Data Generation</a></li>
+  <li><a href="#define-prior-distributions" id="toc-define-prior-distributions" class="nav-link" data-scroll-target="#define-prior-distributions"><span class="header-section-number">4.2.2</span> Define Prior distributions</a></li>
+  <li><a href="#likelihood-function" id="toc-likelihood-function" class="nav-link" data-scroll-target="#likelihood-function"><span class="header-section-number">4.2.3</span> Likelihood function</a></li>
+  <li><a href="#calculation-of-posterior-distribution" id="toc-calculation-of-posterior-distribution" class="nav-link" data-scroll-target="#calculation-of-posterior-distribution"><span class="header-section-number">4.2.4</span> Calculation of Posterior distribution</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian Estimation to Nonlinear Regression Problem</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Let <span class="math inline">\(N(t)\)</span> denotes the population size at time <span class="math inline">\(t\)</span>. <span class="math inline">\(N(t)\)</span> is assumed to be a continuously differentiable function of <span class="math inline">\(t\)</span>. Let the dynamics of the population is governed by the <span class="math inline">\(\theta\)</span>-logistic growth equation <span class="math display">\[\begin{equation}\label{eq:growth}
+\frac{\mathrm{d}N(t)}{\mathrm{d}t}=r_m N(t)\left[1-\left(\frac{N(t)}{K}\right)^{\theta}\right], ~ ~ ~ N(0)=N_0,
+\end{equation}\]</span> where <span class="math inline">\(r_m\)</span> is the intrinsic growth rate of the population, <span class="math inline">\(\theta\)</span> is the curvature parameter depicting the shape of the per capita growth rate (PGR) and population density; <span class="math inline">\(K\)</span> is the carrying capacity of the environment. For <span class="math inline">\(\theta=1\)</span>, we get the logistic growth function, which is a linearly decreasing function of <span class="math inline">\(N\)</span>. For <span class="math inline">\(\theta&lt;1\)</span> and <span class="math inline">\(\theta&gt;1\)</span>, the PGR-density relationship is concave upward and concave downward, respectively. The equation <span class="math inline">\(\eqref{eq:growth}\)</span> is a Bernoulli type differential equation whose solution is given by the following:</p>
+<p><span class="math display">\[\begin{equation}
+N(t)= \frac{K}{\left\{1+  \left[\left(\frac{K}{N_0}\right)^{\theta}-1 \right]e^{-r_m t \theta}\right\}^{\frac{1}{\theta}} }.
+\end{equation}\]</span></p>
+<p>It is easy to verify that as <span class="math inline">\(t\to \infty\)</span>, <span class="math inline">\(N(t) \to K\)</span>. In ecological literature, demographic and environmental variations are main source of stochastic population changes. If the population is subject to the environmental noise alone then the corresponding diffusion equation is described in the form of It<span class="math inline">\(\hat{\mbox{o}}\)</span> stochastic differential equation (SDE) as</p>
+<p><span class="math display">\[\begin{equation}
+\mathrm{d}N(t)=rN(t)\left[1-\left(\frac{N(t)}{K}\right)^\theta\right]\mathrm{d}t + \sigma_eN(t)\mathrm{d}W(t).
+\end{equation}\]</span></p>
+<p>If the dynamics of the population is subject to the demographic variation only, then the growth dynamics is governed by</p>
+<p><span class="math display">\[\begin{equation}\label{eq:SDE}
+\mathrm{d}N(t) = rN(t)\left[1-\left(\frac{N(t)}{K}\right)^\theta\right]\mathrm{d}t+\sigma_d\sqrt{N(t)}\mathrm{d}W(t),
+\end{equation}\]</span></p>
+<p><span class="math inline">\(\sigma^2_d\)</span> and <span class="math inline">\(\sigma^2_e\)</span> are the demographic and environmental variances, respectively. <span class="math inline">\(\{W(t), t\geq 0 \}\)</span> is the standard Brownian motion, so that <span class="math inline">\(\mathrm{d}W(t)\sim \mathcal{N}(0, \mathrm{d}t)\)</span>. We consider the population dynamics to be subjected to environmental stochasticity only. We seek to estimate the model parameters by using the maximum likelihood estimation method. To do that we first simulate the data following the above model using some assumed values of the parameters. The equation <span class="math inline">\(\eqref{eq:SDE}\)</span> can be described as follows,</p>
+<p><span class="math display">\[\begin{equation}
+N(t+\Delta t) - N(t) = r N(t)\left[1-\left(\frac{N(t)}{K}\right)^\theta\right]\Delta t + \sigma_eN(t)\left[W(t + \Delta t) - W(t)\right].
+\end{equation}\]</span></p>
+<p>We have <span class="math inline">\(\{t_0,t_1,\cdots,t_n\}\)</span> be <span class="math inline">\(n+1\)</span> time points with <span class="math inline">\(N(t_0) = X_0\)</span>, which is fixed. <span class="math inline">\(W(t+\Delta t)- W(t)\)</span> is the Brownian motion with mean <span class="math inline">\(0\)</span> and variance <span class="math inline">\(\Delta t\)</span>. The simulation is carried out in the following way: The conditional distribution of <span class="math inline">\(N(t +\Delta t)\)</span> given <span class="math inline">\(N(t)\)</span> is given by a normal distribution with mean <span class="math inline">\(N(t) + rN(t)\left[1-\left(\frac{N(t)}{K}\right)^\theta\right]\Delta t\)</span> and variance <span class="math inline">\(\sigma_e^2N(t)^2\Delta t\)</span> and notionally can be written as follows:</p>
+<p><span class="math display">\[\begin{equation}
+N(t + \Delta t) -N(t)|N(t) \sim \mathcal{N}\left(rN(t)\left[1- \left(\frac{N(t)}{K}\right)^{\theta}\right]\Delta t, \sigma_e^2 N(t)^2 \Delta t\right).
+\end{equation}\]</span></p>
+<p>We fixed <span class="math inline">\(t_0 = 0\)</span> and <span class="math inline">\(\Delta t =0.1\)</span>. Let <span class="math inline">\(N_{t_0},N_{t_1},\dots,N_{t_n}\)</span> are the <span class="math inline">\(n+1\)</span> population sizes are generated using the above rule. The likelihood function <span class="math inline">\(\mathcal{L}(\boldsymbol{\beta})\)</span> of the sample <span class="math inline">\(N_0\)</span>, <span class="math inline">\(N_1\)</span>, <span class="math inline">\(N_2\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(N_n\)</span> is the joint density of the observations treated as a function of the parameter <span class="math inline">\(\boldsymbol{\beta}\)</span>. The method of maximum likelihood provides as estimate of <span class="math inline">\(\boldsymbol{\beta}\)</span> any value <span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span> which maximizes <span class="math inline">\(\mathcal{L}\)</span>. Note that <span class="math inline">\(\{N_{t_i}\}_{i=0}^{n}\)</span> are not independent but the differences are assumed to be independent, So the likelihood function can be written as</p>
+<p><span class="math display">\[\begin{eqnarray*}
+\mathcal{L} &amp;=&amp; f\left(N_1,N_2,\dots,N_n|N_0; r,K,\theta,\sigma_e\right)\\
+&amp;=&amp; f\left(N_1,N_2,\dots,N_n|N_0;\boldsymbol{\beta}\right)\\
+&amp;=&amp; f\left(N_n|N_{n-1},\dots,N_0;\boldsymbol{\beta}\right)f\left(N_{n-1}|N_{n-2},\dots,N_0;\tilde{\beta}\right)\dots f\left(N_1|N_0;\tilde{\beta}\right)\\
+&amp;=&amp;\prod_{i=1}^{n} f\left(N_i|N_{i-1}\dots,N_0;\boldsymbol{\beta}\right)\\
+&amp;=&amp; \prod_{i=1}^{n}f\left(N_i|N_{i-1};\beta\right)\\
+&amp;=&amp; \prod_{i=1}^{n}\frac{1}{\sqrt{2\pi} \sigma_eN_{i-1} {\sqrt{\Delta t_i}}}e^{-\frac{1}{2\sigma^2_e}\Sigma_{i=1}^{n}\left(\frac{N_i-\mu_{N_{i-1}}}{N_{i-1}}\right)^2}\\
+&amp;=&amp; \frac{1}{\sqrt{2\pi}^n(\sigma_e)^n(\prod_{i=1}^{n}N_{i-1} {\sqrt{\Delta t_i}})}e^{-\frac{1}{2\sigma^2_e}\Sigma_{i=1}^{n}\left(\frac{N_i-\mu_{N_{i-1}}}{N_{i-1}}\right)^2}
+\end{eqnarray*}\]</span></p>
+<p>where <span class="math inline">\(\mu_{N_i} =N(t_i) + r N(t_i)\left[1-\left(\frac{N(t_i)}{K}\right)^\theta\right]\Delta t\)</span>. The log-likelihood function is given by</p>
+<span class="math display">\[\begin{eqnarray}
+l(\beta)&amp;=&amp;\log \mathcal{L}(\beta)\\
+&amp;=&amp; -n\ln \sqrt{2\pi}-n\ln \sigma_e-\ln \prod_{i=1}^{n}(N_{i-1}\sqrt{\Delta t_i})-\frac{1}{2 \sigma^2_e}\sum_{i=1}^{n}\left(\frac{N_i - \mu_{N_{i-1}}}{N_{i-1}}\right)^2\\
+&amp;=&amp; -n \ln (\sqrt{2\pi})- n \ln \sigma_e- \sum_{i=1}^{n}\ln \sqrt{\Delta t_i}-\sum_{i=1}^{n}\ln (N_{i-1})-\frac{1}{2\sigma^2_e}\sum_{i=1}^{n}\left[\frac{N_i-N_{i-1}-r N_{i-1}\left[1-\left(\frac{N_{i-1}}{K}\right)^\theta\right]\Delta t_i}{N_{i-1}}\right]^2
+\end{eqnarray}\]</span>
+<section id="sec-estimation_of_parameters" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="sec-estimation_of_parameters"><span class="header-section-number">4.1</span> Estimation of Parameters</h2>
+<p>Consider <span class="math inline">\(\{ N_1,N_2,\cdots,N_{n+1}\}\)</span> be the observed time series data. The absolute change in population size at time <span class="math inline">\(t\)</span> is approximated as <span class="math display">\[\frac{\mathrm{d}N(t)}{\mathrm{d}t} \approx \frac{N(t+\Delta t)-N(t)}{\Delta t}.\]</span> We assume the yearly changes in population size, so that <span class="math inline">\(\Delta t=1\)</span>. The relative changes in population sizes is given by</p>
+<p><span class="math display">\[\begin{equation}
+R(t) = \frac{1}{N}\frac{\mathrm{d}N(t)}{\mathrm{d}t} = \frac{\mathrm{d}}{\mathrm{d}t} \log N \approx \log N(t+1)- \log N(t).
+\end{equation}\]</span></p>
+<p>So, for a given population time series data of size <span class="math inline">\(n+1\)</span>, we have <span class="math inline">\(n\)</span> many observed per capita growth rates <span class="math inline">\(\{R(1),R(2),\cdots,R(n)\}\)</span>. We would like to investigate the dynamics of the population when it is subject to environmental stochastic perturbations alone. The following stochastic differential equation has been used to describe to population changes that is exposed to environmental variability.</p>
+<p><span class="math display">\[\begin{equation}\label{eq:theta logistic}
+\mathrm{d}N = r_m N(t) \left[ 1-\left( \frac{N(t)}{K}\right)^{\theta} \right]\mathrm{d}t + \sigma_{e} N(t)\mathrm{d}W(t) ,
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\sigma_{e}\)</span> represents the intensity of the stochastic perturbation and <span class="math inline">\(W(t)\)</span> is the one dimensional Brownian motion which satisfies <span class="math inline">\(\mathrm{d}W(t) \approx W(t+\mathrm{d}t)-W(t) \sim \mathcal{N}(0,\mathrm{d}t)\)</span>. Our goal is to estimate the parameters of the stochastic model by employing Bayesian statistical methods. First we compute the likelihood function of the model parameters given the population size. It is to be noted that the likelihood function can be written either by conditional on the population size <span class="math inline">\(\{N_t\}\)</span> or on the growth rates <span class="math inline">\(\{R_t\}\)</span>. We can use the either observations on <span class="math inline">\(\{R_t\}\)</span> or <span class="math inline">\(\{N_t\}\)</span> to obtain the posterior distribution of the model parameters. Now, we shall write down the likelihood function given the population time series. Using the equation <span class="math inline">\(\eqref{eq:theta logistic}\)</span> and utilizing the distributional assumptions, we see that the absolute changes in the population size, conditional on the current size, is normally distributed. So we obtain the following (assuming <span class="math inline">\(\Delta t =1\)</span>):</p>
+<p><span class="math display">\[\begin{align}
+N(t+1)-N(t)|N(t) &amp;\sim \mathcal{N}\left(r_m N(t) \left[ 1-\left( \frac{N(t)}{K}\right)^{\theta} \right], \sigma_{e}^2 N(t)^2 \right) \notag \\
+\frac{N(t+1)-N(t)}{N(t)}| N(t) &amp;\sim \mathcal{N}\left(r_m  \left[ 1-\left( \frac{N(t)}{K}\right)^{\theta} \right], \sigma_{e}^2 \right) \notag \\
+N(i+1)-N(i) &amp;\sim \mathcal{N}\left(r_m N(i)\left[1-\left( \frac{N(i)}{K}\right)^{\theta} \right], \sigma_{e}^2 N(i)^2 \right) \notag \\
+N(i+1)|N(i) &amp;\sim \mathcal{N}\left(N(i) + r_m N(i)\left[1-\left( \frac{N(i)}{K}\right)^{\theta} \right], \sigma_{e}^2 N(i)^2 \right) \label{eq:N_i}
+\end{align}\]</span></p>
+<p>We can estimate the parameters using (<span class="math inline">\(\ref{eq:N_i}\)</span>) using the method of maximum likelihood. Therefore by using (<span class="math inline">\(\ref{eq:N_i}\)</span>), our goal is to estimate parameters <span class="math inline">\(r_m\)</span>, <span class="math inline">\(\theta\)</span>, <span class="math inline">\(K\)</span>, <span class="math inline">\(\sigma_e^2\)</span>. If we use <span class="math inline">\(R_t\)</span> values, then the following equation will be used for computation of the likelihood.</p>
+<p><span class="math display">\[\begin{equation}
+R(t)|N(t)  \sim \mathcal{N}\left(r_m\left[1-\left( \frac{N(t)}{K}\right)^{\theta} \right],\sigma_{e} ^2\right)  \label{eq:R_T},
+\end{equation}\]</span> so that the log-likelihood function will be,</p>
+<p><span class="math display">\[\begin{equation}\label{eq:likelihood}
+\mbox{likelihood} = -\frac{n}{2}\log(2\pi)-\frac{n}{2}\log(\sigma_e^2)-\frac{1}{2\sigma_e^2}\sum_{i=1}^{n}\left\lbrace R(i)- r_m\left[1-\left( \frac{N(i)}{K}\right)^{\theta}\right] \right\rbrace^2 .
+\end{equation}\]</span></p>
+<p>To draw inference about <span class="math inline">\(r_m\)</span>, <span class="math inline">\(\theta\)</span>, <span class="math inline">\(K\)</span> and <span class="math inline">\(\sigma_e^2\)</span>, we consider inverted gamma prior for variance term <span class="math inline">\(\sigma_e^2\)</span>, gamma prior for <span class="math inline">\(\theta\)</span>, normal prior for <span class="math inline">\(K\)</span> and normal prior for <span class="math inline">\(r_m\)</span>. Then the complete Bayesian model for this data can be written as,</p>
+<p><span class="math display">\[\begin{align*}
+N(i+1)|N(i),r_m,\theta,K,\sigma_e^2 &amp;\sim \mathcal{N}\left(N(i) + r_m N(i)\left[1-\left( \frac{N(i)}{K}\right)^{\theta} \right], \sigma_{e}^2 N(i)^2 \right) \\
+r_m|\alpha_0,\beta_0 &amp;\sim \mathcal{N}(\alpha_0,\beta_0)\\
+K| \mu_K,\sigma_K^2 &amp;\sim \mathcal{N}(\mu_K,\sigma_K^2)\\
+\theta|\alpha_1,\beta_1 &amp;\sim \mathcal{G}(\alpha_1,\beta_1)  \\
+\sigma_e^2|\alpha_2,\beta_2 &amp;\sim \mathcal{IG}(\alpha_2,\beta_2),
+\end{align*}\]</span></p>
+<p>where <span class="math inline">\(\alpha_0,\alpha_1,\alpha_2,\beta_0,\beta_1,\beta_2,\mu_K\)</span>, and <span class="math inline">\(\sigma_K^2\)</span> are hyper-parameters and assumed to be known. As the starting population size is known, <span class="math inline">\(P(N(1)=N_0)=1\)</span>. We take <span class="math inline">\(N(1)=N_0\)</span> as the starting population size and assumed to be a fixed quantity. The joint posterior distribution of <span class="math inline">\(r_m,\theta,K,\sigma_e^2\)</span> can be written as,</p>
+<p><span class="math display">\[\begin{equation*}
+f(r_m,\theta,K,\sigma_e ^2|\boldsymbol{N})=\frac{f(\boldsymbol{N},r_m,\theta,K,\sigma_e ^2)}{f_{\boldsymbol{N}}(\boldsymbol{N})},
+\end{equation*}\]</span> where <span class="math inline">\(\boldsymbol{N}=(N(1),N(2),\cdots,N(n+1))'\)</span> represents the data and <span class="math inline">\(f_{\boldsymbol{N}}(\boldsymbol{N})\)</span> is the marginal distribution of <span class="math inline">\(\boldsymbol{N}\)</span>.</p>
+<p><span class="math display">\[\begin{equation}\label{eq:27}
+f\left(r_m,\theta,K,\sigma_e^2|\boldsymbol{N}\right) = \frac{f\left(\boldsymbol{N}|r_m,\theta,K,\sigma_e^2\right)\cdot f\left(r_m,\theta,K,\sigma_e^2\right)}{f(\boldsymbol{N})}.
+\end{equation}\]</span> We assume that <span class="math inline">\(r_m,\theta,K,\sigma_e^2\)</span> are independent variables, therefore <span class="math inline">\(f(r_m,\theta,K,\sigma_e ^2)\)</span> can be written as,</p>
+<p><span class="math display">\[\begin{equation}
+f\left(r_m,\theta,K,\sigma_e^2\right)=f(r_m)\cdot f(\theta) \cdot f(K) \cdot f\left(\sigma_e^2\right).
+\end{equation}\]</span> So, equation (<span class="math inline">\(\ref{eq:27}\)</span>) becomes, <span class="math display">\[\begin{eqnarray*}
+f\left(r_m,\theta,K,\sigma_e^2|\boldsymbol{N}\right) &amp;\propto&amp; f\left(\boldsymbol{N}|r_m,\theta,K,\sigma_e^2\right)\cdot f\left(r_m,\theta,K,\sigma_e^2\right) \\
+&amp;\propto&amp; f(\boldsymbol{N}|r_m,\theta,K,\sigma_e ^2)\cdot f(r_m)\cdot f(\theta) \cdot f(K) \cdot f(\sigma_e ^2)~~[\mbox{independence of priors}]  \\
+&amp;\propto&amp;  \left[\prod_{i=1}^{n} f\left(N(i+1)|N(i)\right)\right]\cdot f(r_m)\cdot f(\theta) \cdot f(K) \cdot f(\sigma_e ^2).
+\end{eqnarray*}\]</span></p>
+<p>The right hand side of the above expression is product of the likelihood and the prior, which is nothing but unnormalized joint posterior distribution of parameters. Since, the distribution does not follow some common known distribution, we use the Gibbs sampling method that simulates samples from the conditional distribution. So we generate random sample from conditional posterior distribution of each parameters. However, it is observed that in this case also the conditional posterior does not follow any known distribution. So, we use grid approximation algorithm to approximate the posterior probability distribution.</p>
+<p>Let <span class="math inline">\(\boldsymbol{\beta} = \left(r_m,\theta, K, \sigma_e^2\right)\)</span>. Since, <span class="math inline">\(N(i)\)</span>’s are not independent, so the likelihood can be written as,</p>
+<p><span class="math display">\[\begin{eqnarray*}
+\mbox{likelihood} &amp;=&amp; f\left(N(1),N(2),\cdots , N(n+1) ; \beta \right)   \\
+&amp;=&amp; f\left(N(n+1)|N(n) ; \beta \right)\cdot f\left(N(n)|N(n-1) ; \beta \right) \cdots f\left(N(2)|N(1) ; \beta \right)\cdot f\left(N(1) ; \beta \right) \\
+&amp;=&amp; \prod_{i=1}^{n} f\left(N(i+1)|N(i) ; \beta \right)\cdot f\left(N(1); \beta \right).
+\end{eqnarray*}\]</span></p>
+<p>We assume that the initial population size to be known so that <span class="math inline">\(f\left(N(1);\beta \right) = 1\)</span>.</p>
+<p><span class="math display">\[\begin{eqnarray*}
+\mbox{likelihood} &amp;=&amp; \prod_{i=1}^{n} f\left(N(i+1)|N(i) ; \beta \right) \\
+&amp;=&amp; \prod_{i=1}^{n}\left[\frac{1}{\sqrt[]{2\pi}\sigma_e^2 N(i)} e^{-\frac{\left\lbrace N(i+1)-N(i)- r_m N(i)\left[1-\left( \frac{N(i)}{K}\right)^{\theta} \right]\right\rbrace^2} {2\sigma_e^2 N(i)^2}}\right]\\
+&amp;=&amp;\prod_{i=1}^{n} \left[\frac{1}{\sqrt[]{2\pi}\sigma_e^2 N(i)} e^{{-\frac{1}{2\sigma_e^2}\left\lbrace \frac{N(i+1)-N(i)}{N(i)}-r_m\left[1-\left( \frac{N(i)}{K}\right)^{\theta}\right] \right\rbrace}^{\theta} }\right]\\
+&amp;=&amp; \frac{1}{(\sqrt[]{2\pi})^n}\frac{1}{(\sigma_e)^n}\frac{1}{\prod_{i=1}^{n} N(i)} e^{-\frac{1}{2\sigma_e^2}\sum_{i=1}^{n}\left\lbrace R(i)- r_m\left[1-\left( \frac{N(i)}{K}\right)^{\theta}\right]  \right\rbrace^2}.
+\end{eqnarray*}\]</span></p>
+<p>The log-likelihood can be given as,</p>
+<p><span class="math display">\[\begin{equation}
+\mbox{log-likelihood} = -\frac{n}{2}\log(2\pi)-\frac{n}{2}\log(\sigma_e^2)-\sum_{i=1}^{n}\log(N(i))-\frac{1}{2\sigma_e^2}\sum_{i=1}^{n}\left\lbrace R(i)- r_m\left[1-\left( \frac{N(i)}{K}\right)^{\theta}\right] \right\rbrace^2.
+\end{equation}\]</span></p>
+<p>To compute the conditional posterior following process has been carried out,</p>
+<p><span class="math display">\[\begin{eqnarray*}
+f(r_m|\theta,K,\sigma_e^2,\boldsymbol{N})&amp;=&amp;\frac{f(\boldsymbol{N},r_m,\theta,K,\sigma_e^2)}{f(\theta,K,\sigma_e^2,\boldsymbol{N})}\\
+&amp;=&amp; \frac{f(\boldsymbol{N}|r_m,\theta,K,\sigma_e^2)\cdot f(r_m,\theta,K,\sigma_e^2)}{f(\boldsymbol{N},\theta,K,\sigma_e^2)}\\
+&amp;=&amp;\frac{f(\boldsymbol{N}|r_m,\theta,K,\sigma_e^2)\cdot\pi(r_m)\pi(\theta)\pi(K)\pi(\sigma_e^2)}{f(\boldsymbol{N}|\theta,K,\sigma_e^2)\cdot f(\theta,K,\sigma_e^2)}\\
+&amp;=&amp;\frac{f(\boldsymbol{N}|r_m,\theta,K,\sigma_e^2)\cdot \pi(r_m)\cdot \pi(\theta)\cdot \pi(K)\cdot\pi(\sigma_e^2)}{f(\boldsymbol{N}|\theta,K,\sigma_e^2)\cdot \pi(\theta)\cdot \pi(K)\cdot\pi(\sigma_e^2)}\\
+&amp;=&amp;\frac{f(\boldsymbol{N}|r_m,\theta,K,\sigma_e^2)\cdot \pi(r_m)}{f(\boldsymbol{N}|\theta,K,\sigma_e^2)}.
+\end{eqnarray*}\]</span> Let <span class="math inline">\(m=f(\boldsymbol{N}|\theta,K,\sigma_e^2)\)</span>, be the joint marginal probability density function of the data. <span class="math display">\[\begin{eqnarray}
+f(r_m|\theta,K,\sigma_e^2,\boldsymbol{N}) &amp;\propto&amp; f(\boldsymbol{N}|r_m,\theta,K,\sigma_e^2)\cdot \pi(r_m) \notag\\
+&amp;\propto&amp; \prod_{i=1}^{n} f(N_{i+1}|N_i ; r_m,\theta,K,\sigma_e^2)\cdot  \pi(r_m).
+\end{eqnarray}\]</span> Similarly,</p>
+<p><span class="math display">\[\begin{eqnarray}
+f(\theta|r_m,K,\sigma_e^2,\boldsymbol{N})&amp;\propto&amp; \prod_{i=1}^{n} f(N_{i+1}|N_i ; r_m,\theta,K,\sigma_e^2)\cdot  \pi(\theta)\\
+f(K|r_m,\theta,\sigma_e^2,\boldsymbol{N})&amp;\propto&amp; \prod_{i=1}^{n} f(N_{i+1}|N_i ; r_m,\theta,K,\sigma_e^2)\cdot  \pi(K)\\
+f(\sigma_e^2|r_m,\theta,K,\boldsymbol{N}) &amp;\propto&amp; \prod_{i=1}^{n} f(N_{i+1}|N_i ; r_m,\theta,K,\sigma_e^2)\cdot  \pi(\sigma_e^2).
+\end{eqnarray}\]</span></p>
+<p>In Bayesian linear regression we already verify that the variance (specially <span class="math inline">\(\phi\)</span>) after observed data follows <span class="math inline">\(\mathcal{IG}\left( \mbox{shape} = \alpha+\frac{n}{2}, \mbox{rate} =\frac{1}{2} \sum_{i=1}^{n}\left(y_i-\beta_0-\beta_1x_i\right)^2 + \gamma\right)\)</span>. Similarly here we expect posterior distribution of variance(<span class="math inline">\(\sigma_e^2\)</span>) as follows:</p>
+<p><span class="math display">\[\begin{equation}\label{eq:post_sigma_sq}
+\sigma_e^2|\boldsymbol{N} \sim \mathcal{IG}\left( \mbox{shape} = \alpha_2 +\frac{n}{2}, \mbox{rate} =\frac{1}{2}\sum_{i=1}^{n}\left(y_i- r_m \left\lbrace 1-\left( \frac{N(t)}{K}\right)^{\theta} \right\rbrace\right)^2+\beta_2\right).
+\end{equation}\]</span></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the prior distribution <span class="math inline">\(\pi(r_m)\)</span> is considered to be <span class="math inline">\(\mbox{gammma}(\alpha, \beta)\)</span> which takes only positive values, then task of estimation of a declining population may be underestimated.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To reduce the computational time a correct choice of priors is required. In this case, since <span class="math inline">\(K\)</span> is a property of the environment, it should not change drastically. Posterior sample of k should not vary too much away from the prior mean of <span class="math inline">\(K\)</span>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the prior distribution <span class="math inline">\(\pi(r_m)\)</span> is considered to be <span class="math inline">\(\text{gamma}(\alpha, \beta)\)</span> which takes only positive values, then the task of estimation of a declining population may be underestimated.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To reduce the computational time, a correct choice of priors is required. In this case, since <span class="math inline">\(K\)</span> is a property of the environment, it should not change drastically. The posterior sample of <span class="math inline">\(K\)</span> should not vary too much from the prior mean of <span class="math inline">\(K\)</span>.</p>
+</div>
+</div>
+<p>The above structure of the posterior density function of <span class="math inline">\(\sigma_e^2\)</span> given in the equation <span class="math inline">\(\eqref{eq:post_sigma_sq}\)</span> is verified by the simulation for the simulated data.</p>
+</section>
+<section id="simulation-study" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="simulation-study"><span class="header-section-number">4.2</span> Simulation study</h2>
+<section id="data-generation" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="data-generation"><span class="header-section-number">4.2.1</span> Data Generation</h3>
+<p>Time series data of population size is generated using <span class="math inline">\(r_m=0.5,~~ \theta=0.5,~~K=50,~~\sigma_e^2=0.0025\)</span>. The initial population size is set as <span class="math inline">\(N_0 = 23\)</span> and the length of the simulated series is <span class="math inline">\(n=30\)</span>. The full Bayesian model is described as follows:</p>
+<p><span class="math display">\[\begin{align}
+R(t)|N(t) &amp;\sim  \mathcal{N}\left(r_m\left[1-\left( \frac{N(t)}{K}\right)^{\theta} \right],\sigma_{e} ^2\right)\label{eq:logistic model} \\
+r_m|\alpha_0,\beta_0 &amp;\sim \mathcal{N}(\alpha_0,\beta_0)\notag\\
+K| \mu_K,\sigma_K^2 &amp;\sim  \mathcal{N}(\mu_K,\sigma_K^2)\notag\\
+\theta|\alpha_1,\beta_1 &amp;\sim \mathcal{G}(\alpha_1,\beta_1)\notag\\
+\sigma_e^2|\alpha_2,\beta_2 &amp;\sim \mathcal{IG}(\alpha_2,\beta_2).\notag
+\end{align}\]</span></p>
+<div class="cell" data-hash="Bayesian-Estimation-to-Nonlinear-Regression-Problem_cache/html/fig-simulated_data_f24f786de81de8210233b844d67e94d8">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># parameters values for simulating the data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>rm <span class="ot">=</span> <span class="fl">0.5</span> <span class="co"># intrinsic growth rate</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fl">0.5</span> <span class="co"># parameter for strength of density dependence</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>K <span class="ot">=</span> <span class="dv">50</span> <span class="co"># carrying capacity of the environment</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sig_2e <span class="ot">=</span> <span class="fl">0.0025</span> <span class="co"># variance of the environmental perturbation</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">30</span> <span class="co"># length of the time series = n+1</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>N1 <span class="ot">=</span> <span class="dv">23</span> <span class="co"># initial population size</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">471</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="fu">numeric</span>(n <span class="sc">+</span> <span class="dv">1</span>) <span class="co"># storage the simulated time series</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>N[<span class="dv">1</span>] <span class="ot">=</span> N1 <span class="co"># initial population size.</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(N)<span class="sc">-</span><span class="dv">1</span>)){</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="at">n =</span><span class="dv">1</span>, <span class="at">mean =</span> rm<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>(N[i]<span class="sc">/</span>K)<span class="sc">^</span>theta), <span class="at">sd =</span> <span class="fu">sqrt</span>(sig_2e)) <span class="co">#   simulating growth rate</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  N[i<span class="sc">+</span><span class="dv">1</span>] <span class="ot">=</span> N[i]<span class="sc">*</span><span class="fu">exp</span>(r) <span class="co"># simulate next generation</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#print(N) # printing population size</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="dv">1</span><span class="sc">:</span>(n<span class="sc">+</span><span class="dv">1</span>), N, <span class="at">type=</span> <span class="st">"p"</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>fun_logistic <span class="ot">=</span> <span class="cf">function</span>(x){ <span class="co"># Deterministic solution of the generalized logistic equation</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>K<span class="sc">/</span>(<span class="dv">1</span><span class="sc">+</span>((K<span class="sc">/</span>N1)<span class="sc">^</span>theta<span class="dv">-1</span> )<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>rm<span class="sc">*</span>x<span class="sc">*</span>theta) )<span class="sc">^</span>(<span class="dv">1</span><span class="sc">/</span>theta)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(fun_logistic, <span class="dv">0</span>, n<span class="sc">+</span><span class="dv">1</span>, <span class="at">add=</span> <span class="cn">TRUE</span>, <span class="at">lwd=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-simulated_data" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Bayesian-Estimation-to-Nonlinear-Regression-Problem_files/figure-html/fig-simulated_data-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.1: Plot of simulated data for the study of Nonlinear regression generated using the model given in the equation (<span class="math inline">\(\ref{eq:logistic model}\)</span>). The parameters values are fixed as <span class="math inline">\(r_m=0.5, \theta=0.5, K=50, \sigma_e^2=0.0025\)</span>, and initial population size taken as <span class="math inline">\(N_0=23\)</span>, generated data of length <span class="math inline">\(n=30\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="define-prior-distributions" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="define-prior-distributions"><span class="header-section-number">4.2.2</span> Define Prior distributions</h3>
+<p>For generated time series, we want to generate values from posterior of each parameter<span class="math inline">\((r_m,K,\theta,\sigma_e^2)\)</span>. For simulation purpose, we first define the prior functions for the prior distribution given in the equation (<span class="math inline">\(\ref{eq:logistic model}\)</span>) by considering the values of hyper-parameters as <span class="math inline">\(\beta_0=1, \sigma_K^2=3, \alpha_1=1, \beta_1=1, \alpha_2=1, \beta_2= 0.0001\)</span>. Prior mean of <span class="math inline">\(K\)</span> and <span class="math inline">\(r_m\)</span> that is <span class="math inline">\(\mu_K\)</span> and <span class="math inline">\(\alpha_0\)</span> are obtained by fitting the logistic growth equation using nonlinear least squares method (<span class="math inline">\(\texttt{nls}\)</span>, in <span class="math inline">\(\texttt{R}\)</span>). The package <span class="math inline">\(\texttt{invgamma}\)</span> <span class="citation" data-cites="invgamma">(<a href="references.html#ref-invgamma" role="doc-biblioref">Kahle and Stamey 2017</a>)</span> has been used for generating random numbers from the inverted gamma distribution.</p>
+<div class="cell" data-hash="Bayesian-Estimation-to-Nonlinear-Regression-Problem_cache/html/unnamed-chunk-2_76a4915f5feb7cb116cf59218585b6d7">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>prior_mean_rm <span class="ot">=</span> <span class="fu">coef</span>(fit)[<span class="dv">1</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>prior_sd_rm <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fun_prior_rm <span class="ot">=</span> <span class="cf">function</span>(x){ <span class="co"># Prior specification for r_m</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dnorm</span>(x, prior_mean_rm, prior_sd_rm)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>prior_mean_K <span class="ot">=</span> <span class="fu">coef</span>(fit)[<span class="dv">2</span>]</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>prior_sd_K <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>fun_prior_K <span class="ot">=</span> <span class="cf">function</span>(x){ <span class="co"># Prior specification for K</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dnorm</span>(x, prior_mean_K, prior_sd_K)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>alpha_1 <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>beta_1 <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>fun_prior_theta <span class="ot">=</span> <span class="cf">function</span>(x){ <span class="co"># Prior specification for theta</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dgamma</span>(x, <span class="at">shape =</span> alpha_1, <span class="at">rate =</span> beta_1)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(invgamma)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>alpha_2 <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>beta_2 <span class="ot">=</span> <span class="fl">0.0001</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>fun_prior_sig_2e <span class="ot">=</span> <span class="cf">function</span>(x){ <span class="co"># Prior specification for inverted gama</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dinvgamma</span>(x, <span class="at">shape =</span> alpha_2, <span class="at">rate =</span> beta_2)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As mentioned in the <a href="#sec-estimation_of_parameters"><span>Section&nbsp;4.1</span></a>, the exact form of the conditional posterior distribution is not known, so grid approximation has been utilized to approximate the conditional posterior density function. In the following code, we have created grid within an interval specified for each parameter. This initial choice is important as this act as a support for the density function. Finer the grid is more accurate is the posterior approximation.</p>
+<div class="cell" data-hash="Bayesian-Estimation-to-Nonlinear-Regression-Problem_cache/html/unnamed-chunk-3_a5d4e76d2ac7bdbd82d352cd31027e79">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specification of grid values for approximating the posterior</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>step <span class="ot">=</span> <span class="fl">0.01</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>grid_rm <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="sc">-</span><span class="dv">3</span>, <span class="at">to =</span><span class="dv">3</span>, <span class="at">by =</span> step)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>grid_K <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">40</span>, <span class="at">to =</span> <span class="dv">60</span>, <span class="at">by =</span> step)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>grid_theta <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">0</span>, <span class="at">to =</span><span class="dv">10</span>, <span class="at">by =</span> step)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>grid_sig_2e <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="fl">0.0001</span> , <span class="at">to =</span><span class="fl">0.01</span>, <span class="at">by =</span> <span class="fl">0.00001</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="likelihood-function" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="likelihood-function"><span class="header-section-number">4.2.3</span> Likelihood function</h3>
+<p>In the following code we define the likelihood function. Note that we have directly computed the log-likelihood values to avoid truncation error.</p>
+<div class="cell" data-hash="Bayesian-Estimation-to-Nonlinear-Regression-Problem_cache/html/unnamed-chunk-4_f0518a222e59b760a1ad8e429c226a0d">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>likelihood <span class="ot">=</span> <span class="cf">function</span>(data, param){</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  rm <span class="ot">=</span> param[<span class="dv">1</span>]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  K <span class="ot">=</span> param[<span class="dv">2</span>]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  theta <span class="ot">=</span> param[<span class="dv">3</span>]</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  sig_2e <span class="ot">=</span> param[<span class="dv">4</span>]</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> data[,<span class="dv">1</span>] <span class="co"># population size</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> data[,<span class="dv">2</span>] <span class="co"># per capita growth rates</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  log_lik <span class="ot">=</span> <span class="sc">-</span>n<span class="sc">*</span><span class="fu">log</span>(<span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>pi)) <span class="sc">-</span> (n<span class="sc">/</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">log</span>(sig_2e) <span class="sc">-</span> <span class="fu">sum</span>(((y<span class="sc">-</span>rm<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>(x<span class="sc">/</span>K)<span class="sc">^</span>theta))<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sig_2e)))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">exp</span>(log_lik))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="calculation-of-posterior-distribution" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="calculation-of-posterior-distribution"><span class="header-section-number">4.2.4</span> Calculation of Posterior distribution</h3>
+<p>First of all we have set 100000 as a number Markov Chain samples to be generated. Then we have fixed the initial values of the parameters and defined the arrays for storing the posterior values of the parameters in <span class="math inline">\(\texttt{R}\)</span> as follows:</p>
+<div class="cell" data-hash="Bayesian-Estimation-to-Nonlinear-Regression-Problem_cache/html/unnamed-chunk-5_a653a2ef9fad1b98d46058dd100c6322">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>iter <span class="ot">=</span> <span class="dv">100000</span> <span class="co"># Length of the chain to be simulated</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>post_rm <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, iter) <span class="co"># posterior values of r_m</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>post_K <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, iter) <span class="co"># posterior values of K</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>post_theta <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, iter) <span class="co"># posterior values of theta</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>post_sig_2e <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, iter) <span class="co"># posterior values of simga_2e</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>param <span class="ot">=</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="dv">40</span>, <span class="dv">1</span>, <span class="fl">0.02</span>) <span class="co"># starting of the chain</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># initialization of the chain</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>post_rm[<span class="dv">1</span>] <span class="ot">=</span> param[<span class="dv">1</span>]</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>post_K[<span class="dv">1</span>] <span class="ot">=</span> param[<span class="dv">2</span>]</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>post_theta[<span class="dv">1</span>] <span class="ot">=</span> param[<span class="dv">3</span>]</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>post_sig_2e[<span class="dv">1</span>] <span class="ot">=</span> param[<span class="dv">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next we carried out the Gibbs sampling and grid approximation of the posterior distribution. At each Gibbs sampling step (outer loop), the conditional posterior has been approximated by grid approximation (four inner loop for four parameters).</p>
+<div class="cell" data-hash="Bayesian-Estimation-to-Nonlinear-Regression-Problem_cache/html/unnamed-chunk-6_634c40d640c256dfc93408cdeb13b9f0">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>iter){ <span class="co"># loop for iteration of Gibbs sampling</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># section for rm</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  tmp_post_rm <span class="ot">=</span> <span class="fu">numeric</span>(<span class="at">length =</span> <span class="fu">length</span>(grid_rm))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(grid_rm)){</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>      param <span class="ot">=</span> <span class="fu">c</span>(grid_rm[j], post_K[i<span class="dv">-1</span>], post_theta[i<span class="dv">-1</span>], post_sig_2e[i<span class="dv">-1</span>])</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      tmp_post_rm[j] <span class="ot">=</span> <span class="fu">likelihood</span>(<span class="at">data =</span> data, <span class="at">param =</span> param)<span class="sc">*</span><span class="fu">fun_prior_rm</span>(grid_rm[j])</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">=</span> tmp_post_rm<span class="sc">/</span><span class="fu">sum</span>(tmp_post_rm)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  post_rm[i] <span class="ot">=</span> <span class="fu">sample</span>(grid_rm, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> prob)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># section for K</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  tmp_post_K <span class="ot">=</span> <span class="fu">numeric</span>(<span class="at">length =</span> <span class="fu">length</span>(grid_K))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(grid_K)){</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    param <span class="ot">=</span> <span class="fu">c</span>(post_rm[i], grid_K[j], post_theta[i<span class="dv">-1</span>], post_sig_2e[i<span class="dv">-1</span>])</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    tmp_post_K[j] <span class="ot">=</span> <span class="fu">likelihood</span>(<span class="at">data =</span> data, <span class="at">param =</span> param)<span class="sc">*</span><span class="fu">fun_prior_K</span>(grid_K[j])</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">=</span> tmp_post_K<span class="sc">/</span><span class="fu">sum</span>(tmp_post_K)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  post_K[i] <span class="ot">=</span> <span class="fu">sample</span>(grid_K, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> prob)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># section for theta</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  tmp_post_theta <span class="ot">=</span> <span class="fu">numeric</span>(<span class="at">length =</span> <span class="fu">length</span>(grid_theta))</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(grid_theta)){</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    param <span class="ot">=</span> <span class="fu">c</span>(post_rm[i], post_K[i], grid_theta[j], post_sig_2e[i<span class="dv">-1</span>])</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    tmp_post_theta[j] <span class="ot">=</span> <span class="fu">likelihood</span>(<span class="at">data =</span> data, <span class="at">param =</span> param)<span class="sc">*</span><span class="fu">fun_prior_theta</span>(grid_theta[j])</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">=</span> tmp_post_theta<span class="sc">/</span><span class="fu">sum</span>(tmp_post_theta)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  post_theta[i] <span class="ot">=</span> <span class="fu">sample</span>(grid_theta, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> prob)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># section for sig_2e</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  tmp_post_sig_2e <span class="ot">=</span> <span class="fu">numeric</span>(<span class="at">length =</span> <span class="fu">length</span>(grid_sig_2e))</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(grid_sig_2e)){</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    param <span class="ot">=</span> <span class="fu">c</span>(post_rm[i], post_K[i], post_theta[i], grid_sig_2e[j])</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    tmp_post_sig_2e[j] <span class="ot">=</span> <span class="fu">likelihood</span>(<span class="at">data =</span> data, <span class="at">param =</span> param)<span class="sc">*</span><span class="fu">fun_prior_sig_2e</span>(grid_sig_2e[j])</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">=</span> tmp_post_sig_2e<span class="sc">/</span><span class="fu">sum</span>(tmp_post_sig_2e)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  post_sig_2e[i] <span class="ot">=</span> <span class="fu">sample</span>(grid_sig_2e, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> prob)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>} <span class="co"># loop ends for Gibbs iteration</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>By executing the above code, we have obtained the 1,00,000 sample values from the posterior density of <span class="math inline">\(r_m, K, \theta\)</span>, and <span class="math inline">\(\sigma_e^2\)</span>. We stored them in the local directory on system for the further analysis.</p>
+<div class="cell" data-hash="Bayesian-Estimation-to-Nonlinear-Regression-Problem_cache/html/unnamed-chunk-7_1d25083195c4c531cf8f77467b854622">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>post_param_vals <span class="ot">=</span> <span class="fu">data.frame</span>(post_rm,post_K,post_theta,post_sig_2e)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"specify path here"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>filename <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"output"</span>,seed, <span class="st">".txt"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(post_param_vals, <span class="at">file =</span> filename, <span class="at">col.names =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Trace plot is a key diagnostic tool used in Bayesian statistics to assess the behavior and convergence of MCMC chains. So we have plotted the traceplot of posterior values obtained using Grid and Gibbs approximation using following code:</p>
+<div class="cell" data-hash="Bayesian-Estimation-to-Nonlinear-Regression-Problem_cache/html/unnamed-chunk-8_e7414fe310b584c6688e67c5beaa0603">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>filename <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">"output"</span>,seed, <span class="st">".txt"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>post_vals <span class="ot">=</span> <span class="fu">read.table</span>(<span class="at">file =</span> filename, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#traceplot</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(post_vals<span class="sc">$</span>post_rm, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Trace plot of"</span><span class="sc">~</span> r[m]),<span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(post_vals<span class="sc">$</span>post_K, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Trace plot of"</span><span class="sc">~</span> K),<span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(post_vals<span class="sc">$</span>post_theta, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Trace plot of"</span><span class="sc">~</span> theta),<span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(post_vals<span class="sc">$</span>post_sig_2e, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Trace plot of"</span><span class="sc">~</span> sigma[e]<span class="sc">^</span><span class="dv">2</span>),<span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We have kept initial half i.e 50,000 sample values as a burn-in period for each parameter. After the burn-in period from remaining 50,000 sample posterior values, using appropriate step for thinning (using auto-correlation function, $) we have reduced the autocorrelation between the successive samples to get reliable estimate of parameters. Next we have plot the histogram of posterior distribution of all parameters using following code and depicted in the <a href="#fig-posterior">Figure&nbsp;<span>4.2</span></a>.</p>
+<div class="cell" data-hash="Bayesian-Estimation-to-Nonlinear-Regression-Problem_cache/html/unnamed-chunk-9_138c8869907a3bee896b7d6681ef9f77">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cut <span class="ot">=</span> <span class="fl">0.5</span> <span class="co"># burn-in chain (first 50,000 values as burn-in period)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># for rm</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>u <span class="ot">=</span> post_vals<span class="sc">$</span>post_rm[<span class="fu">ceiling</span>(iter<span class="sc">*</span>cut)<span class="sc">:</span>iter] <span class="co"># after burn in period</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>index <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">length</span>(u), <span class="at">by =</span> <span class="dv">20</span>) <span class="co"># thining</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>post_rm_thinning <span class="ot">=</span> u[index] <span class="co"># values after thinning</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(post_rm_thinning,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"acf of posterior "</span><span class="sc">~</span>rm)) <span class="co"># autocorrelation</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>post_interval_rm <span class="ot">=</span> <span class="fu">quantile</span>(post_rm_thinning, <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">97.5</span>)<span class="sc">/</span><span class="dv">100</span>) <span class="co">#credible interval for rm</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post_rm_thinning, <span class="at">probability =</span> <span class="cn">TRUE</span>,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Posterior of "</span><span class="sc">~</span> r[m]),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="at">xlab =</span> <span class="fu">expression</span>(r[m]),<span class="at">col =</span> <span class="st">"grey"</span>, <span class="at">breaks =</span> <span class="dv">40</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(post_interval_rm[<span class="dv">1</span>], <span class="dv">0</span>, post_interval_rm[<span class="dv">2</span>], <span class="dv">0</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">angle =</span> <span class="dv">90</span>,<span class="at">col =</span> <span class="st">"red"</span>, <span class="at">code =</span> <span class="dv">1</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(post_interval_rm[<span class="dv">2</span>], <span class="dv">0</span>, post_interval_rm[<span class="dv">1</span>], <span class="dv">0</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">angle =</span> <span class="dv">90</span>,<span class="at">col =</span> <span class="st">"red"</span>, <span class="at">code =</span> <span class="dv">1</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>,<span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Credible Interval"</span>),<span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"red"</span>,<span class="at">lty =</span> <span class="dv">1</span>,<span class="at">cex =</span> <span class="dv">1</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># for K</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>u <span class="ot">=</span> post_vals<span class="sc">$</span>post_K[<span class="fu">ceiling</span>(iter<span class="sc">*</span>cut)<span class="sc">:</span>iter] <span class="co"># after burn in period</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>index <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">length</span>(u), <span class="at">by =</span> <span class="dv">10</span>) <span class="co"># thining</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>post_K_thinning <span class="ot">=</span> u[index] <span class="co"># values after thinning</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(post_K_thinning,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"acf of posterior "</span><span class="sc">~</span>K)) <span class="co"># autocorrelation</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>post_interval_K <span class="ot">=</span> <span class="fu">quantile</span>(post_K_thinning, <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">97.5</span>)<span class="sc">/</span><span class="dv">100</span>) <span class="co">#credible interval for K</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post_K_thinning, <span class="at">probability =</span> <span class="cn">TRUE</span>,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Posterior of "</span><span class="sc">~</span> K),</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="at">xlab =</span> <span class="fu">expression</span>(K),<span class="at">col =</span> <span class="st">"grey"</span>, <span class="at">breaks =</span> <span class="dv">40</span>)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(post_interval_K[<span class="dv">1</span>], <span class="dv">0</span>, post_interval_K[<span class="dv">2</span>], <span class="dv">0</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">code =</span> <span class="dv">1</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(post_interval_K[<span class="dv">2</span>], <span class="dv">0</span>, post_interval_K[<span class="dv">1</span>], <span class="dv">0</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">code =</span> <span class="dv">1</span>)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>,<span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Credible Interval"</span>),<span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"red"</span>,<span class="at">lty =</span> <span class="dv">1</span>,<span class="at">cex =</span> <span class="dv">1</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co"># for theta</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>u <span class="ot">=</span> post_vals<span class="sc">$</span>post_theta[<span class="fu">ceiling</span>(iter<span class="sc">*</span>cut)<span class="sc">:</span>iter] <span class="co"># after burn in period</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>index <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">length</span>(u), <span class="at">by =</span> <span class="dv">20</span>) <span class="co"># thining</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>post_theta_thinning <span class="ot">=</span> u[index] <span class="co"># values after thinning</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(post_theta_thinning,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"acf of posterior "</span><span class="sc">~</span>theta)) <span class="co"># autocorrelation</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>post_interval_theta <span class="ot">=</span> <span class="fu">quantile</span>(post_theta_thinning, <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">97.5</span>)<span class="sc">/</span><span class="dv">100</span>) <span class="co">#credible interval for theta</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post_theta_thinning, <span class="at">probability =</span> <span class="cn">TRUE</span>,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Posterior of "</span><span class="sc">~</span> theta),<span class="at">xlab =</span> <span class="fu">expression</span>(theta),<span class="at">col =</span> <span class="st">"grey"</span>, <span class="at">breaks =</span> <span class="dv">40</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(post_interval_theta[<span class="dv">1</span>], <span class="dv">0</span>, post_interval_theta[<span class="dv">2</span>], <span class="dv">0</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">code =</span> <span class="dv">1</span>)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(post_interval_theta[<span class="dv">2</span>], <span class="dv">0</span>, post_interval_theta[<span class="dv">1</span>], <span class="dv">0</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">code =</span> <span class="dv">1</span>)</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>,<span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Credible Interval"</span>),<span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"red"</span>,<span class="at">lty =</span> <span class="dv">1</span>,<span class="at">cex =</span> <span class="dv">1</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="co"># for sigma_e^2</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>u <span class="ot">=</span> post_vals<span class="sc">$</span>post_sig_2e[<span class="fu">ceiling</span>(iter<span class="sc">*</span>cut)<span class="sc">:</span>iter] <span class="co"># after burn in period</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>index <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">length</span>(u), <span class="at">by =</span> <span class="dv">1</span>) <span class="co"># thining</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>post_sig_2e_thinning <span class="ot">=</span> u[index] <span class="co"># values after thinning</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(post_sig_2e_thinning,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"acf of posterior "</span><span class="sc">~</span>sigma[e]<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>post_interval_sig_2e <span class="ot">=</span> <span class="fu">quantile</span>(post_sig_2e_thinning, <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">97.5</span>)<span class="sc">/</span><span class="dv">100</span>)</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="co">#credible interval for sig_2e</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post_sig_2e_thinning, <span class="at">probability =</span> <span class="cn">TRUE</span>,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Posterior of "</span><span class="sc">~</span> sigma[e]<span class="sc">^</span><span class="dv">2</span>),<span class="at">xlab =</span> <span class="fu">expression</span>(sigma[e]<span class="sc">^</span><span class="dv">2</span>),<span class="at">col =</span> <span class="st">"grey"</span>, <span class="at">breaks =</span> <span class="dv">40</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">800</span>))</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(post_interval_sig_2e[<span class="dv">1</span>], <span class="dv">0</span>, post_interval_sig_2e[<span class="dv">2</span>], <span class="dv">0</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">code =</span> <span class="dv">1</span>)</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(post_interval_sig_2e[<span class="dv">2</span>], <span class="dv">0</span>, post_interval_sig_2e[<span class="dv">1</span>], <span class="dv">0</span>, <span class="at">lwd=</span><span class="dv">3</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">code =</span> <span class="dv">1</span>)</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>,<span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Credible Interval"</span>),<span class="at">lwd =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"red"</span>,<span class="at">lty =</span> <span class="dv">1</span>,<span class="at">cex =</span> <span class="dv">1</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For <span class="math inline">\(\sigma_e^2\)</span>, due to conjugacy the posterior density is predictable, but good approximation would depend on the estimate of the shape parameter which involves other parameters. Here we show what choice of the point estimate for <span class="math inline">\(r_m, K\)</span> and <span class="math inline">\(\theta\)</span> need to be used (<a href="#fig-4">Figure&nbsp;<span>4.2 (d)</span></a>) and we observe that the posterior median values best approximate the posterior density function of <span class="math inline">\(\sigma_e^2\)</span>.</p>
+<div id="fig-posterior" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="./Chapter 4_Bayesian Estimation to Nonlinear Regression Problem_Figures/hist_rm.png" class="img-fluid figure-img" data-ref-parent="fig-posterior"></p>
+<figcaption class="figure-caption">(a)</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="./Chapter 4_Bayesian Estimation to Nonlinear Regression Problem_Figures/hist_K.png" class="img-fluid figure-img" data-ref-parent="fig-posterior"></p>
+<figcaption class="figure-caption">(b)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="./Chapter 4_Bayesian Estimation to Nonlinear Regression Problem_Figures/hist_theta.png" class="img-fluid figure-img" data-ref-parent="fig-posterior"></p>
+<figcaption class="figure-caption">(c)</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="./Chapter 4_Bayesian Estimation to Nonlinear Regression Problem_Figures/hist_sigma_sq_with_3_fitted_curve.png" class="img-fluid figure-img" data-ref-parent="fig-posterior"></p>
+<figcaption class="figure-caption">(d)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4.2: Posterior distribution of the parameters of theta-logistic growth equation. From the histogram of <span class="math inline">\(\sigma_e^2\)</span>, it is evident that posterior median is more appropriate choice to obtain a point estimate of <span class="math inline">\(r_m\)</span>, <span class="math inline">\(K\)</span> and <span class="math inline">\(\theta\)</span>. Blue lines indicate the 95% of credible intervals.</figcaption><p></p>
+</figure>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-invgamma" class="csl-entry" role="listitem">
+Kahle, David, and James Stamey. 2017. <em>Invgamma: The Inverse Gamma Distribution</em>. <a href="https://CRAN.R-project.org/package=invgamma">https://CRAN.R-project.org/package=invgamma</a>.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Bayesian Estimation for Linear Regression Problem.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bayesian Estimation for Linear Regression Problem</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./Bayesian connection to Statistical Regularization.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bayesian connection to Statistical Regularization</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

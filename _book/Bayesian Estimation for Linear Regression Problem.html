@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Introduction to Bayesian Computing - 3&nbsp; Bayesian Estimation for Linear Regression Problem</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./Bayesian Estimation to Nonlinear Regression Problem.html" rel="next">
+<link href="./Illustrative Examples in practice.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+window.MathJax = {
+  tex: {
+    tags: 'all',
+    labels: {
+      sections: true
+    }
+  }
+};
+</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Bayesian Estimation for Linear Regression Problem.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bayesian Estimation for Linear Regression Problem</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Bayesian Computing</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <div class="dropdown">
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Introduction-to-Bayesian-Computing.pdf">
+              <i class="bi bi-bi-file-pdf pe-1"></i>
+            Download PDF
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="./Introduction-to-Bayesian-Computing.epub">
+              <i class="bi bi-bi-journal pe-1"></i>
+            Download ePub
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+      </ul>
+    </div>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Illustrative Examples in practice.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Illustrative Examples in practice</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Bayesian Estimation for Linear Regression Problem.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bayesian Estimation for Linear Regression Problem</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Bayesian Estimation to Nonlinear Regression Problem.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian Estimation to Nonlinear Regression Problem</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Bayesian connection to Statistical Regularization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Bayesian connection to Statistical Regularization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#simulation-study" id="toc-simulation-study" class="nav-link active" data-scroll-target="#simulation-study"><span class="header-section-number">3.1</span> Simulation study</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bayesian Estimation for Linear Regression Problem</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Regression models are commonly used in solving real life data analysis problems. Several statistical softwares are now available that provide posterior distributions of the regression coefficients and allows various choice of the prior distributions. In this document, we shall focus on the detailing of the regression models under a Bayesian setting. we are hoping that this will be helpful for the students to understand the concept better rather than blindly believing the output of softwares. We start our discussion with the most simplest setting <code>Simple Linear Regression</code>. In the next chapter, we shall discuss the Bayesian inference for nonlinear models.</p>
+<p>We have linear regression model; <span class="math display">\[y_i = \beta_0 + \beta_1x_i + \epsilon_i, \text{where}~ \epsilon_i \stackrel{\small{\mbox{iid}}}{\sim} \mathcal{N}(0,\phi),\]</span> and suppose we observe the data <span class="math inline">\((y_i,x_i)\)</span>, <span class="math inline">\(i \in \left\lbrace1,2,\cdots,n\right\rbrace\)</span>, then our model for <span class="math inline">\(y\)</span> is:</p>
+<p><span class="math display">\[\begin{equation}
+y_i \sim \mathcal{N}(\beta_0 + \beta_1 x_i,\phi),~~i = 1,2,\cdots,n.
+\end{equation}\]</span></p>
+<p>Our primary goal is to make inference about the parameters <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. If we consider normal priors on the coefficients and an inverse gamma prior on the variance term, then full Bayesian model for this data can be written as,</p>
+<p><span class="math display">\[\begin{eqnarray}
+y_i|\beta_0,\beta_1,\phi  &amp;\sim&amp;  \mathcal{N}(\beta_0+\beta_1 x_i,\phi),\qquad i = 1,2,\cdots,n, \notag\\
+\beta_0|\mu_0,\tau_0  &amp;\sim&amp;  \mathcal{N}(\mu_0,\tau_0)   \notag\\
+\beta_1|\mu_1,\tau_1  &amp;\sim&amp;  \mathcal{N}(\mu_1,\tau_1)   \notag\\
+\phi|\alpha,\gamma  &amp;\sim&amp;  \mathcal{IG}(\alpha,\gamma),
+\end{eqnarray}\]</span></p>
+<p>where <span class="math inline">\(\mu_0\)</span>, <span class="math inline">\(\tau_0\)</span>, <span class="math inline">\(\mu_1\)</span>, <span class="math inline">\(\tau_1\)</span>, <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\gamma\)</span> all are hyper-parameters and we assume that they are known. Let <span class="math inline">\(y_1,y_2,\cdots,y_n\)</span> are observed data of size <span class="math inline">\(n\)</span> from a population having normal distribution with mean <span class="math inline">\(\beta_0+\beta_1x_i\)</span> and variance <span class="math inline">\(\phi\)</span>, where <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span> are unknown. Our goal is to draw inference about <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span>. Therefore, joint posterior distribution of <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span> can be written as,</p>
+<p><span class="math display">\[\begin{equation}\label{eq:joint_post_dist}
+f(\beta_0,\beta_1,\phi|y) = \frac{f(y,\beta_0,\beta_1,\phi)}{f_Y(y)},   
+\end{equation}\]</span></p>
+<p>where, <span class="math inline">\(f_Y(y)\)</span> is the marginal distribution of <span class="math inline">\(y\)</span>. Now equation <span class="math inline">\(\eqref{eq:joint_post_dist}\)</span> reduces to</p>
+<p><span class="math display">\[\begin{equation}\label{eq:explicit_joint_post_dist}
+f(\beta_0,\beta_1,\phi|y) = \frac{f(y|\beta_0,\beta_1,\phi)\cdot f(\beta_0,\beta_1,\phi)}{\int_{\beta_0}\int_{\beta_1}\int_{\phi}f(y,\beta_0,\beta_1,\phi)d\beta_0 d\beta_1 d\phi}.  
+\end{equation}\]</span></p>
+<p>We assume that <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span> are independent variable, therefore <span class="math inline">\(f(\beta_0,\beta_1,\phi)\)</span> can be written as,</p>
+<p><span class="math display">\[\begin{equation}\label{eq:prior_independence}
+f(\beta_0,\beta_1,\phi) = f(\beta_0) \cdot f(\beta_1) \cdot f(\phi).
+\end{equation}\]</span></p>
+<p>and let <span class="math inline">\(K = \int_{\beta_0}\int_{\beta_1}\int_{\phi}f(y,\beta_0,\beta_1,\phi)\mathrm{d}\beta_0 \mathrm{d}\beta_1 \mathrm{d}\phi\)</span>, this integration is difficult to compute. We know that</p>
+<p><span class="math display">\[\mbox{posterior} \propto \mbox{likelihood} \times \mbox{priors}.\]</span></p>
+<p>Therefore, equation <span class="math inline">\(\eqref{eq:explicit_joint_post_dist}\)</span> becomes,</p>
+<p><span class="math display">\[\begin{eqnarray*}
+f(\beta_0,\beta_1,\phi|y) &amp;=&amp; \frac{1}{K}f(y|\beta_0,\beta_1,\phi)\cdot f(\beta_0,\beta_1,\phi) \\
+f(\beta_0,\beta_1,\phi|y) &amp; \propto &amp; f(y|\beta_0,\beta_1,\phi)\cdot f(\beta_0,\beta_1,\phi)  \\
+f(\beta_0,\beta_1,\phi|y) &amp; \propto &amp; \left[\prod_{i=1}^{n}f(y_i|\beta_0,\beta_1,\phi)\right] f(\beta_0) \cdot f(\beta_1) \cdot f(\phi) \\
+&amp;\propto&amp; \mbox{likelihood} \times \mbox{priors}.
+\end{eqnarray*}\]</span></p>
+<p>From the joint posterior distribution we can not generate random sample because it does not follow any common known distribution. So, we generate random sample from conditional posterior distribution of each parameter. In the following, we calculate the conditional posterior distribution of each parameter. Using the relation</p>
+<p><span class="math display">\[f(y,\beta_0,\beta_1,\phi) = f(\beta_0\mid\beta_1,\phi,y)\cdot f(\beta_1,\phi,y),\]</span></p>
+<p>the conditional posterior distribution of the parameter <span class="math inline">\(\beta_0\)</span> is given by,</p>
+<p><span class="math display">\[\begin{eqnarray}\label{eq:cond_post}
+f(\beta_0|\beta_1,\phi,y) &amp;=&amp; \frac{f(y,\beta_0,\beta_1,\phi)}{f(\beta_1,\phi,y)}\notag\\
+&amp;=&amp; \frac{f(y|\beta_0,\beta_1,\phi)\cdot f(\beta_0,\beta_1,\phi)}{f(\beta_1,\phi,y)}~~~~~\left[\mbox{since,}~ f(y,\beta_0,\beta_1,\phi) = f(y|\beta_0,\beta_1,\phi)\cdot f(\beta_0,\beta_1,\phi)\right] \notag\\
+&amp;=&amp; \frac{f(y|\beta_0,\beta_1,\phi)f(\beta_0)f(\beta_1)f(\phi)}{f(y|\beta_1,\phi)f(\beta_1,\phi)}~~ \left[\mbox{since,}~  f(\beta_0,\beta_1,\phi)=f(\beta_0)f(\beta_1)f(\phi)\right] \notag\\
+&amp;=&amp; \frac{f(y|\beta_0,\beta_1,\phi)f(\beta_0)f(\beta_1)f(\phi)}{f(y|\beta_1,\phi)f(\beta_1)f(\phi)} \notag\\
+&amp;=&amp; \frac{f(y|\beta_0,\beta_1,\phi)f(\beta_0)}{f(y|\beta_1,\phi)}.
+\end{eqnarray}\]</span></p>
+<p>Let, <span class="math inline">\(m\)</span> = <span class="math inline">\(f(y|\beta_1,\phi)\)</span>, therefore,</p>
+<p><span class="math display">\[\begin{eqnarray}
+f(\beta_0|\beta_1,\phi,y) &amp;=&amp; \frac{1}{m} f(y|\beta_0,\beta_1,\phi)\cdot f(\beta_0) \notag\\
+&amp;\propto&amp; f(y|\beta_0,\beta_1,\phi)\cdot(\beta_0) \notag\\
+&amp;\propto&amp; \left[\prod_{i=1}^{n}f(y_i|\beta_0,\beta_1,\phi)\right]\cdot f(\beta_0).\label{eq:cond_post_beta0}
+\end{eqnarray}\]</span></p>
+<p>Like the joint posterior, the conditional posterior is also proportional to the product of the likelihood and prior of the parameter of interest. The computation yields the similar expression for <span class="math inline">\(\beta_1\)</span> as given below;</p>
+<p><span class="math display">\[\begin{equation}
+f(\beta_1|\beta_0,\phi,y) \propto \left[\prod_{i=1}^{n}f(y_i|\beta_0,\beta_1,\phi)\right]\cdot f(\beta_1),
+\end{equation}\]</span></p>
+<p>and,</p>
+<p><span class="math display">\[\begin{eqnarray}
+f(\phi|\beta_0,\beta_1,y) &amp;\propto&amp; \left[\prod_{i=1}^{n}f(y_i|\beta_0,\beta_1,\phi)\right]\cdot f(\phi)  \notag\\
+&amp;=&amp; \left(\frac{1}{\sqrt{2\pi\phi}}\right)^{n}e^{-\frac{1}{2\phi}\sum_{i=1}^{n}(y_i-\beta_0-\beta_1x_i)^2} \frac{\gamma^{\alpha}}{\Gamma{(\alpha)}} \phi^{-\alpha-1} e^{-\frac{\gamma}{\phi}} \notag\\
+&amp; = &amp; \phi^{-\frac{n}{2}} \phi^{-\alpha-1} e^{-\frac{1}{\phi}\left[\frac{1}{2} \sum_{i=1}^{n}\left(y_i-\beta_0-\beta_1x_i\right)^2 + \gamma\right]} \notag\\
+&amp; = &amp; \phi^{-(\alpha+\frac{n}{2}+1)}e^{-\frac{1}{\phi}\left[\frac{1}{2} \sum_{i=1}^{n}\left(y_i-\beta_0-\beta_1x_i\right)^2 + \gamma\right]}.
+\end{eqnarray}\]</span></p>
+<p>The prior specification for <span class="math inline">\(\phi\)</span> is given by the inverse gamma density <span class="math inline">\(\mathcal{IG}(\mbox{shape} = \alpha, \mbox{rate} = \gamma)\)</span> function which is given as follows,</p>
+<p><span class="math display">\[\begin{equation}\label{eq:IG_prior}
+f(\phi;\alpha,\gamma) = \frac{\gamma^{\alpha}}{\Gamma{(\alpha)}}\phi^{-\alpha-1}e^\frac{-\gamma}{\phi},~~\phi&gt;0.
+\end{equation}\]</span></p>
+<p>Comparing the conditional posterior of <span class="math inline">\(\phi\)</span> with equation <span class="math inline">\(\eqref{eq:IG_prior}\)</span>, we can see that <span class="math inline">\(f(\phi|\beta_0, \beta_1, y)\)</span> yields the inverse gamma distribution with the parameter values as, shape = <span class="math inline">\(\alpha + \frac{n}{2}\)</span> and rate = <span class="math inline">\(\frac{1}{2} \sum_{i=1}^{n}\left(y_i-\beta_0-\beta_1x_i\right)^2 + \gamma\)</span>.</p>
+<p><span class="math display">\[\begin{eqnarray}\label{eq:cond_post_phi}
+f(\phi|\beta_0,\beta_1,y) =  \mathcal{IG}\left( \alpha+\frac{n}{2}, \frac{1}{2} \sum_{i=1}^{n}\left(y_i-\beta_0-\beta_1x_i\right)^2 + \gamma\right).
+\end{eqnarray}\]</span></p>
+<p>Our goal is to draw inference about the population parameters <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span>. To compute the posterior credible interval for the parameters, we require to draw samples from the joint posterior distribution of <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span> i.e <span class="math inline">\(f(\beta_0, \beta_1,\phi)\)</span>. A posterior credible interval is a range of values within which an unknown parameter lies with a certain probability, based on the posterior distribution in Bayesian inference. It represents the uncertainty around the estimated parameter after incorporating the observed data and prior beliefs. We observe that <span class="math inline">\(f(\beta_0, \beta_1,\phi)\)</span> does not follow any common known distribution from which it easier to draw the samples. So, we utilize the Gibbs sampling method, in which, random samples are drawn from the conditional posterior distribution. So we compute the posterior distribution of <span class="math inline">\(\beta_0\)</span>, conditional on <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span> (Eq. <span class="math inline">\(\ref{eq:cond_post_beta0}\)</span>). Similarly conditional posterior distribution for <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span> are evaluated. We evaluated the conditional posterior <span class="math inline">\(f(\beta_0|\beta_1, \phi)\)</span> and <span class="math inline">\(f(\beta_1|\beta_0, \phi)\)</span> by assuming normal priors from <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> and inverse gamma prior for <span class="math inline">\(\phi\)</span>. The calculation suggested that <span class="math inline">\(f(\beta_0|\beta_1, \phi)\)</span> and <span class="math inline">\(f(\beta_1|\beta_0, \phi)\)</span> does not follow any common distribution. However, conditional posterior distribution of <span class="math inline">\(\phi\)</span> belongs to the family of inverse gamma distribution (Eq. <span class="math inline">\(\ref{eq:cond_post_phi}\)</span>). This is due to the conjugacy relationship between normal distribution and inverse gamma distribution with respect to the parameter representing the variance. We utilized grid approximation method for generating samples from the conditional posterior of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. For generating samples from the posterior of <span class="math inline">\(\phi\)</span> we used direction simulation from the inverse gamma distribution using <span class="math inline">\(\texttt{invgamma}\)</span> package <span class="citation" data-cites="invgamma">(<a href="#ref-invgamma" role="doc-biblioref">Kahle and Stamey 2017</a>)</span> from <span class="math inline">\(\texttt{R}\)</span> software for statistical computing. However, this can also be carried out by using probability integral transform.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(X_1, X_2, \cdots, X_n\)</span> be a random sample of size <span class="math inline">\(n\)</span> from a population following <span class="math inline">\(\mathcal{N}(\theta,\sigma^2)\)</span>. If <span class="math inline">\(S^2\)</span> is the sample variance based on a sample of size <span class="math inline">\(n\)</span> from a normal population, we know that <span class="math inline">\(\frac{(n-1)S^2}{\sigma^2}\)</span> has a <span class="math inline">\(\chi^2_{n-1}\)</span> distribution. The conjugate prior for <span class="math inline">\(\sigma^2\)</span> is the inverse gamma probability density <span class="math inline">\(\mathcal{IG}(\alpha,\beta)\)</span>. Then the posterior distribution of <span class="math inline">\(\sigma^2\)</span> is, <span class="math inline">\(\mathcal{IG}\left(\alpha + \frac{n-1}{2},\left[\frac{(n-1)S^2}{2} + \frac{1}{\beta}\right]^{-1}\right).\)</span></p>
+</div>
+</div>
+<p>In grid approximation method, we first define grid for estimating the posterior. After that at every grid point we compute the likelihood and prior. By multiplying likelihood and prior we get unstandardized posterior values at each grid point. Dividing each value by sum of all values we get the standardized posterior values. This discrete distribution is then used to simulate realization from exact posterior distribution. From all grid point we randomly select one grid point according to their probability. This process is executed by using <span class="math inline">\(\texttt{sample()}\)</span> function available in <span class="math inline">\(\texttt{R}\)</span>. We simulate this process for long time. After the sampling is done, we get a chain of simulated values from the posterior distribution. Since, it is a Markov chain, the sample values autocorrelated. To obtain independent observations we used thinning by taking every sixteen observation after the burn-in period. However, the choice should be decided by investigating the autocorrelation plot of the chain.</p>
+<p>At this point, it is nice to have an idea on Gibbs sampling method. Suppose we have joint probability distribution of parameters (not necessarily in known form), we want to generate random sample from marginal probability distribution of each parameter. Then we use Gibbs sampling method. In Gibbs sampling method, we generate values from the conditional distribution, but we want values from marginal probability(unconditional) distribution. The values which we get from conditional probability distribution of each parameter, after certain burn-in period acts as a realization from the true marginal probability distribution of respective parameters. In the current context on Bayesian linear regression, we want to simulate observations from the <span class="math inline">\(f(\beta_0,\beta_1,\phi |y)\)</span>. Since, it is difficult to simulate from the joint distribution, we simulate from the conditional posterior distribution <span class="math inline">\(f(\beta_0|\beta_1, \phi, y)\)</span>.</p>
+<section id="simulation-study" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="simulation-study"><span class="header-section-number">3.1</span> Simulation study</h2>
+<p>For checking purpose using simulation, we have fixed population parameters of a linear regression model as <span class="math inline">\(\beta_0\)</span> = 3, <span class="math inline">\(\beta_1\)</span> = 1 and <span class="math inline">\(\phi\)</span> = <span class="math inline">\(1\)</span>. Since we do not have the real data in our hand, so we created artificial data using following model with these fixed values of parameters (<a href="#fig-simulated_data">Figure&nbsp;<span class="quarto-unresolved-ref">fig-simulated_data</span></a>),</p>
+<p><span class="math display">\[y_i = \beta_0 + \beta_1 x_i + \mathcal{N}(\mbox{mean} = 0, ~\mbox{sd} =\sqrt{\phi}), i \in \{1,2,\cdots,n\}.\]</span></p>
+<p>We have prior for <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> is Normal distribution with mean(<span class="math inline">\(\mu_0\)</span>), variance(<span class="math inline">\(\tau_0\)</span>) and mean(<span class="math inline">\(\mu_1\)</span>), variance(<span class="math inline">\(\tau_1)\)</span>, respectively. Parameter <span class="math inline">\(\phi\)</span> have prior following the inverse gamma distribution with shape(<span class="math inline">\(\alpha\)</span>) and rate(<span class="math inline">\(\gamma\)</span>). The hyper parameters <span class="math inline">\(\mu_0\)</span>, <span class="math inline">\(\tau_0\)</span>, <span class="math inline">\(\mu_1\)</span>, <span class="math inline">\(\tau_1\)</span>, <span class="math inline">\(\alpha\)</span>, <span class="math inline">\(\gamma\)</span> are assumed to be known. After that we computed the conditional posterior distribution of <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span> assuming the above priors. Conditional posterior of <span class="math inline">\(f(\beta_0|\beta_1,\phi)\)</span> and <span class="math inline">\(f(\beta_1|\beta_0,\phi)\)</span> do not follow any common know distributions. So we have used grid approximation method for generating samples from the conditional posterior of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. From this process we get the unstandardized posterior values at the grid points, then we standardized this values by dividing the sum of all unstandardized posterior values. We randomly select one grid sample and we iterate this process for 100000 times but we consider starting 70000 random sample as burn-in period and after a burn-in period. we want the independent random sample, to obtain independent sample we used thinning by taking every sixteen sample after the burn-in period in posterior of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. In posterior of <span class="math inline">\(\phi\)</span> we used thinning by taking every third sample after the burn-in period. However, the choice is good should be decided by plotting <span class="math inline">\(\texttt{ACF}\)</span> of after thinning sample. After checking autocorrelation of thinning simulated sample, we draw histogram of <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span>. Histogram of conditional posterior distribution of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> of normal distribution and conditional posterior distribution of <span class="math inline">\(\phi\)</span> is inverse gamma distribution approximated using the posterior means of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. Population parameters are fall within the credible interval of posterior distribution <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span>. In developing the Gibbs sampling algorithm for Bayesian regression, we have used the inbuilt function <span class="math inline">\(\texttt{rnorm}\)</span> and <span class="math inline">\(\texttt{rinvgamma}\)</span> from <span class="math inline">\(\texttt{R}\)</span> base and <span class="math inline">\(\texttt{invgamma}\)</span> package respectively. However by virtue of the probability integral transform both of them can be simulated from uniform random number.</p>
+<div class="cell" data-hash="Bayesian-Estimation-for-Linear-Regression-Problem_cache/html/fig-simulated_data_92cf9cbdcd1684ad917bdf0d55439b44">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>beta_0 <span class="ot">=</span> <span class="dv">3</span>                                 <span class="co"># population intercept</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>beta_1 <span class="ot">=</span> <span class="dv">1</span>                                 <span class="co"># population slope</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>phi <span class="ot">=</span> <span class="dv">1</span>                                    <span class="co"># population error variance</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="dv">50</span>)             <span class="co"># fixation of the population parameter</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)                              <span class="co"># we fixing a randomness in output</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> beta_0 <span class="sc">+</span> beta_1 <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(x), <span class="dv">0</span>, <span class="fu">sqrt</span>(phi))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>data <span class="ot">=</span> <span class="fu">data.frame</span>(y, x)                    <span class="co"># data containing population size</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x,y, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-simulated_data" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Bayesian-Estimation-for-Linear-Regression-Problem_files/figure-html/fig-simulated_data-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.1: Plot of simulated data for the study of linear regression generated using the model <span class="math inline">\(y_i = \beta_0 + \beta_1 x_i + \mathcal{N}(\mbox{mean} = 0, ~\mbox{sd} =\sqrt{\phi}), i \in \{1,2,\cdots,n\}\)</span>. The parameters values are fixed as <span class="math inline">\(\beta_0 = 3,~\beta_1 = 1,~\phi = 1\)</span>, and generated data of length <span class="math inline">\(n=50\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In the above code the population parameters have been fixed for simulation purpose. The parameters are set as <span class="math inline">\(\beta_0 = 3\)</span>, <span class="math inline">\(\beta_1 = 1\)</span> and <span class="math inline">\(\phi = 1\)</span>. The seed has been fixed so that the results can be reproduced later as well. The reader is encouraged to run the complete code step by step rather than running it completely in a single step. In the following section, we specify the prior distribution for the model parameters.</p>
+<div class="cell" data-hash="Bayesian-Estimation-for-Linear-Regression-Problem_cache/html/unnamed-chunk-2_8e6c33b752b4ec44c0d3b8fa6ee0db4c">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prior for beta_0</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mu_0 <span class="ot">=</span> <span class="dv">2</span>; tau_0 <span class="ot">=</span> <span class="fl">0.4</span>                      <span class="co"># prior parameter</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>prior_beta_0 <span class="ot">=</span> <span class="cf">function</span>(x){                <span class="co"># function for prior beta_1</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dnorm</span>(x, <span class="at">mean =</span> mu_0, <span class="at">sd =</span> <span class="fu">sqrt</span>(tau_0))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Prior for beta_1</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>mu_1 <span class="ot">=</span> <span class="dv">2</span>; tau_1 <span class="ot">=</span> <span class="fl">0.5</span>                      <span class="co"># prior parameter</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>prior_beta_1 <span class="ot">=</span> <span class="cf">function</span>(x){                <span class="co"># function for prior beta_1</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dnorm</span>(x, <span class="at">mean =</span> mu_1, <span class="at">sd =</span> <span class="fu">sqrt</span>(tau_1))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Prior for phi. </span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(invgamma)                          <span class="co">#</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">2</span>; gamma <span class="ot">=</span> <span class="dv">2</span>                       <span class="co"># prior parameters</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>prior_phi <span class="ot">=</span> <span class="cf">function</span>(x){                   <span class="co"># function for prior phi</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dinvgamma</span>(x, <span class="at">shape =</span> alpha, <span class="at">rate =</span> gamma)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The following code describes the likelihood function. Recall that to compute the posterior we have to multiply the likelihood function with the prior distribution. So, here we write separate function for the likelihood function. The likelihood function is the joint distribution of the data values where the parameters are considered as variable. Also, note that the function directly compute the log-likelihood; this is is helpful to avoid truncation errors made by the software.</p>
+<div class="cell" data-hash="Bayesian-Estimation-for-Linear-Regression-Problem_cache/html/unnamed-chunk-3_24d835bfa30dab3cb8dede6e1866792e">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>likelihood <span class="ot">=</span> <span class="cf">function</span>(data, params){   <span class="co"># likelihood function of data given parameters</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> data[,<span class="dv">1</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> data[,<span class="dv">2</span>]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">=</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  beta_0 <span class="ot">=</span> params[<span class="dv">1</span>]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  beta_1 <span class="ot">=</span> params[<span class="dv">2</span>]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  phi <span class="ot">=</span> params[<span class="dv">3</span>]</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  log_lik <span class="ot">=</span> <span class="sc">-</span>n<span class="sc">*</span><span class="fu">log</span>(<span class="fu">sqrt</span>(<span class="dv">2</span><span class="sc">*</span>pi)) <span class="sc">-</span> (n<span class="sc">/</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">log</span>(phi) <span class="sc">-</span> <span class="fu">sum</span>((y <span class="sc">-</span> beta_0<span class="sc">-</span>beta_1<span class="sc">*</span>x)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>phi)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log-likelihood of data given parameters</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">exp</span>(log_lik))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The following codes are self explanatory. Sufficient comments have been included. Note that we have created the grid values by dividing an interval with a step size of 0.01. Choice of this interval plays critical role for a successful grid approximation. This interval is essentially act as a support for the posterior distribution of the designated parameter. The simulation would start with an initial choice of the parameters <span class="math inline">\(\beta_0^{(0)}\)</span>, <span class="math inline">\(\beta_1^{(0)}\)</span> and <span class="math inline">\(\phi^{(0)}\)</span> which have been simulated from the prior distribution.</p>
+<div class="cell" data-hash="Bayesian-Estimation-for-Linear-Regression-Problem_cache/html/unnamed-chunk-4_67c30e01cadf2a8e9803ab54b487fbc3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># storage for posterior samples</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>iteration <span class="ot">=</span> <span class="dv">100000</span>                        <span class="co"># number of iterations</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>post_beta_0 <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, iteration)          <span class="co"># storage for posterior of beta_0</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>post_beta_1 <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, iteration)          <span class="co"># storage for posterior of beta_1</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>post_phi <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, iteration)             <span class="co"># storage for posterior of phi</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Specification of grids</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>step <span class="ot">=</span> <span class="fl">0.01</span>                                      <span class="co"># grid step</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>grid_beta_0 <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="sc">-</span><span class="dv">5</span>, <span class="at">to =</span> <span class="dv">10</span>, <span class="at">by =</span> step) <span class="co"># fixation of the grid of beta_0</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>grid_beta_1 <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">from =</span> <span class="sc">-</span><span class="dv">5</span>, <span class="at">to =</span> <span class="dv">5</span>, <span class="at">by =</span> step)  <span class="co"># fixation of the grid of beta_1</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialization of the posterior samples</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>post_beta_0[<span class="dv">1</span>] <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="at">mean =</span> mu_0, <span class="at">sd =</span> <span class="fu">sqrt</span>(tau_0))   <span class="co"># posterior beta_0</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>post_beta_1[<span class="dv">1</span>] <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="at">mean =</span> mu_1, <span class="at">sd =</span> <span class="fu">sqrt</span>(tau_1))   <span class="co"># posterior beta_1</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>post_phi[<span class="dv">1</span>] <span class="ot">=</span> <span class="fu">rinvgamma</span>(<span class="at">n =</span> <span class="dv">1</span>, <span class="at">shape =</span> alpha, <span class="at">rate =</span> gamma)<span class="co"># posterior phi</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The following codes give the code for Gibbs sampling method to generate the posterior distribution from the marginal posterior distribution. In the text, it has been mentioned that we do not have idea about the joint posterior distribution of the parameters, so we simulate from the marginal posterior distribution. Since, the exact functional form of the marginal posterior is also not known, we approximate it by using grid approximation.</p>
+<div class="cell" data-hash="Bayesian-Estimation-for-Linear-Regression-Problem_cache/html/unnamed-chunk-5_718890b018bcb27e60332ef19007612e">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>iteration){</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># section for posterior sample of beta_0</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  tmp_post_beta_0 <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">length</span>(grid_beta_0))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(grid_beta_0)){</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    params <span class="ot">=</span> <span class="fu">c</span>(grid_beta_0[j], post_beta_1[i<span class="dv">-1</span>], post_phi[i<span class="dv">-1</span>])</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    tmp_post_beta_0[j] <span class="ot">=</span> <span class="fu">likelihood</span>(<span class="at">data =</span> data, <span class="at">params =</span> params) </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                                <span class="sc">*</span> <span class="fu">prior_beta_0</span>(grid_beta_0[j])</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">=</span> tmp_post_beta_0<span class="sc">/</span><span class="fu">sum</span>(tmp_post_beta_0)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  post_beta_0[i] <span class="ot">=</span> <span class="fu">sample</span>(grid_beta_0, <span class="dv">1</span>, <span class="at">prob =</span> prob) <span class="co"># sample of posterior</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  beta_0 after normalize</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># section for posterior sample of beta_1</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  tmp_post_beta_1 <span class="ot">=</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">length</span>(grid_beta_1))</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(grid_beta_1)){</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    params <span class="ot">=</span> <span class="fu">c</span>(post_beta_0[i], grid_beta_1[j], post_phi[i<span class="dv">-1</span>])</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    tmp_post_beta_1[j] <span class="ot">=</span> <span class="fu">likelihood</span>(<span class="at">data =</span> data, <span class="at">params=</span> params) </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>                                <span class="sc">*</span> <span class="fu">prior_beta_1</span>(grid_beta_1[j])</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">=</span> tmp_post_beta_1<span class="sc">/</span>(<span class="fu">sum</span>(tmp_post_beta_1))</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  post_beta_1[i] <span class="ot">=</span> <span class="fu">sample</span>(grid_beta_1, <span class="dv">1</span>, <span class="at">prob =</span> prob) <span class="co"># sample of posterior</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  beta_1 after normalize</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># section for posterior sample of phi</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  shape <span class="ot">=</span> alpha <span class="sc">+</span> <span class="fu">nrow</span>(data)<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  rate <span class="ot">=</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">sum</span>((y <span class="sc">-</span> post_beta_0[i] <span class="sc">-</span> post_beta_1[i]<span class="sc">*</span>x)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> gamma</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  post_phi[i] <span class="ot">=</span> <span class="fu">rinvgamma</span>(<span class="dv">1</span>, <span class="at">shape =</span> shape, <span class="at">rate =</span> rate)  <span class="co"># sample of posterior phi</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Trace plots are useful tools to convergence of the chains which are expected to converge the posterior distribution. After an initial burn in period, the values would act as samples from the target (desired posterior) distribution. In the following we have considered first 70% of the simulated values as the burn in step. There is no hard and fast rule for it.</p>
+<div class="cell" data-hash="Bayesian-Estimation-for-Linear-Regression-Problem_cache/html/unnamed-chunk-6_eb611fceb6312e5f4298332c58a5ea63">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Trace plots</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plot of posterior of beta_0</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(post_beta_0, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Trace plot of"</span><span class="sc">~</span> beta[<span class="dv">0</span>]),<span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plot of posterior of beta_1</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(post_beta_1, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Trace plot of"</span><span class="sc">~</span> beta[<span class="dv">1</span>]),<span class="at">col =</span> <span class="st">"red"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plot of posterior of phi</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(post_phi, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Trace plot of"</span><span class="sc">~</span> phi),<span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>It is important to note that simulation of <span class="math inline">\(\beta_0^{(j)}\)</span> depends on the value of <span class="math inline">\(\beta_0^{(j-1)}\)</span>. Similarly for other parameters as well. Thus, the posterior values are identically distributed (after a sufficiently large step) but not independent. So, the test for autocorrelation has been performed as the values have been selected accordingly. For example, we may consider every 10th values after the burn in period. This is also known as thinning. The function <span class="math inline">\(\texttt{acf()}\)</span> has been utilized for this purpose.</p>
+<div class="cell" data-hash="Bayesian-Estimation-for-Linear-Regression-Problem_cache/html/unnamed-chunk-7_0702b9b05e9d4568be7d6fd7bef0ac5d">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot of conditional posterior density functions of beta_0, beta_1, phi</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>cut <span class="ot">=</span> <span class="fl">0.7</span>                                           <span class="co"># for cutting starting 70% sample</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Section for plot acf of posterior beta_0</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>u <span class="ot">=</span> post_beta_0[<span class="fu">ceiling</span>(iteration<span class="sc">*</span>cut)<span class="sc">:</span>iteration]   <span class="co"># after burn-in period</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>index <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">length</span>(u), <span class="at">by =</span> <span class="dv">16</span>)                   <span class="co"># thining</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>post_beta_b0_thinning <span class="ot">=</span> u[index]                    <span class="co"># values after thinning</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(post_beta_b0_thinning,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"acf of posterior "</span><span class="sc">~</span>beta[<span class="dv">0</span>])) <span class="co">#checking autocorrelation</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Section for plot acf of posterior beta_1</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>u <span class="ot">=</span> post_beta_1[<span class="fu">ceiling</span>(iteration<span class="sc">*</span>cut)<span class="sc">:</span>iteration]   <span class="co"># after burn-in period</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>index <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">length</span>(u), <span class="at">by =</span> <span class="dv">16</span>)                   <span class="co"># thinning</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>post_beta_b1_thinning <span class="ot">=</span> u[index]                    <span class="co"># values after thinnig</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(post_beta_b1_thinning,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"acf of posterior "</span><span class="sc">~</span>beta[<span class="dv">1</span>]))<span class="co"># checking autocorrelation</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Section for plot acf of posterior phi</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>u <span class="ot">=</span> post_phi[<span class="fu">ceiling</span>(iteration<span class="sc">*</span>cut)<span class="sc">:</span>iteration]      <span class="co"># after burn-in period</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>index <span class="ot">=</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">length</span>(u), <span class="at">by =</span> <span class="dv">3</span>)                    <span class="co"># thinning</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>post_phi_thinning <span class="ot">=</span> u[index]                        <span class="co"># values after thinning</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(post_phi_thinning,<span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"acf of posterior "</span><span class="sc">~</span>phi)) <span class="co"># checking autocorrelation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>After the thinning has been done, we visualize the approximated distribution by means of histogram. As we can see that the posterior density of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> can be well approximated by the normal distribution. The posterior density of <span class="math inline">\(\phi\)</span> is positively skewed and can be well approximated by the inverted gamma density function. This is due to conjugacy which has been mentioned earlier. The exact posterior density for <span class="math inline">\(\phi\)</span> has been computed using the mean of the posterior samples of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>.</p>
+<div class="cell" data-hash="Bayesian-Estimation-for-Linear-Regression-Problem_cache/html/unnamed-chunk-8_950ac54001cab506914fbb9d461ba2a7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Section for plot histogram of posterior beta_0 after thinning</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post_beta_b0_thinning, <span class="at">probability =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">" Posterior of "</span><span class="sc">~</span> beta[<span class="dv">0</span>]),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="fu">expression</span>(beta[<span class="dv">0</span>]),<span class="at">col =</span> <span class="st">"grey"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>credible_interval_beta_0 <span class="ot">=</span> <span class="fu">quantile</span>(post_beta_b0_thinning, <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">97.5</span>)<span class="sc">/</span><span class="dv">100</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> credible_interval_beta_0,<span class="at">col =</span> <span class="st">"blue"</span>,<span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>,<span class="at">legend =</span> <span class="st">"Credible Interval"</span>,<span class="at">lwd =</span><span class="dv">2</span>,<span class="at">col =</span> <span class="st">"blue"</span>,<span class="at">lty =</span> <span class="dv">2</span>,<span class="at">cex =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Section for plot histogram of posterior beta_1 after thinning</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post_beta_b1_thinning,<span class="at">probability =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"Posterior of "</span><span class="sc">~</span>beta[<span class="dv">1</span>]),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span> <span class="st">"grey"</span>,<span class="at">xlab =</span> <span class="fu">expression</span>(beta[<span class="dv">1</span>]))</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>credible_interval_beta_1 <span class="ot">=</span> <span class="fu">quantile</span>(post_beta_b1_thinning, <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">97.5</span>)<span class="sc">/</span><span class="dv">100</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> credible_interval_beta_1, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>,<span class="at">legend =</span> <span class="st">"Credible Interval"</span>,<span class="at">lwd =</span><span class="dv">2</span>,<span class="at">col =</span> <span class="st">"blue"</span>,<span class="at">lty =</span> <span class="dv">2</span>,<span class="at">cex =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Section for plot histogram of posterior phi after thinning</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(post_phi_thinning, <span class="at">probability =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">main =</span> <span class="fu">bquote</span>(<span class="st">"psterior of "</span><span class="sc">~</span> phi),</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">col =</span><span class="st">"grey"</span>,<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">3</span>), <span class="at">xlab =</span> <span class="fu">expression</span>(phi))</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>credible_interval_phi <span class="ot">=</span> <span class="fu">quantile</span>(post_phi_thinning, <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fl">97.5</span>)<span class="sc">/</span><span class="dv">100</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span>credible_interval_phi,<span class="at">col =</span> <span class="st">"blue"</span>,<span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>,<span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Credible Interval"</span>,<span class="st">"True curve of  phi"</span>),</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"blue"</span>,<span class="st">"red"</span>), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">cex =</span> <span class="fl">0.5</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Approximating the posterior distribution of phi using the posterior means of beta_0 and beta_1</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>mean_post_beta_0 <span class="ot">=</span> <span class="fu">mean</span>(post_beta_b0_thinning)</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>mean_post_beta_1 <span class="ot">=</span> <span class="fu">mean</span>(post_beta_b1_thinning)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>shape <span class="ot">=</span> alpha <span class="sc">+</span> <span class="fu">nrow</span>(data)<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>rate <span class="ot">=</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">sum</span>((y <span class="sc">-</span> mean_post_beta_0 <span class="sc">-</span> mean_post_beta_1<span class="sc">*</span>x)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> gamma</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dinvgamma</span>(x, <span class="at">shape =</span> shape, <span class="at">rate =</span> rate),<span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="fig-trace" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="./Chapter 3_Bayesian Estimation for Linear Regression Problem_Figures/trace.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.2: Trace plot of posterior <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\phi\)</span>.</figcaption>
+</figure>
+</div>
+<p><img src="./Chapter 3_Bayesian Estimation for Linear Regression Problem_Figures/Linear_Bayesian.png" id="fig-Histogram" class="img-fluid" alt="The top panel depicts the autocorrelation function plot of posterior samples for \beta_0, \beta_1 and \phi. The function \texttt{acf} was used for this purpose. The bottom panel depicts the histograms of posterior values of \beta_0, \beta_1 and \phi. Blue lines indicate the credible interval and the red line is approximation of the conditional posterior distribution of \phi, f(\phi|\hat{\beta_0}, \hat{\beta_1},y), where \hat{\beta_0} and \hat{\beta_1} are the posterior means of \beta_0 and \beta_1, respectively."> Up to this point, we have developed a clear understanding of linear regression from scratch under the Bayesian framework and demonstrated it on simulated data for better comprehension. The Bayesian estimation of the linear regression parameters has been conducted using custom-written code, without relying on any R packages. This approach provides a transparent view of the underlying processes. Once the mechanism is well understood, the same analysis can be performed using built-in packages. Some of the packages available in R for Bayesian linear regression are <span class="math inline">\(\texttt{rstanarm}\)</span> <span class="citation" data-cites="rstanarm">(<a href="#ref-rstanarm" role="doc-biblioref">Goodrich et al. 2024</a>)</span>, and <span class="math inline">\(\texttt{brms}\)</span> <span class="citation" data-cites="brms">(<a href="#ref-brms" role="doc-biblioref">Bürkner 2017</a>)</span>. The <span class="math inline">\(\texttt{rstanarm}\)</span> package provides a user-friendly interface to fit Bayesian models using Stan, while <span class="math inline">\(\texttt{brms}\)</span> extends this by allowing complex model structures using formula syntax.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-brms" class="csl-entry" role="listitem">
+Bürkner, Paul-Christian. 2017. <span>“<span class="nocase">brms</span>: An <span>R</span> Package for <span>Bayesian</span> Multilevel Models Using <span>Stan</span>.”</span> <em>Journal of Statistical Software</em> 80 (1): 1–28. <a href="https://doi.org/10.18637/jss.v080.i01">https://doi.org/10.18637/jss.v080.i01</a>.
+</div>
+<div id="ref-rstanarm" class="csl-entry" role="listitem">
+Goodrich, Ben, Jonah Gabry, Imad Ali, and Sam Brilleman. 2024. <span>“Rstanarm: <span>Bayesian</span> Applied Regression Modeling via <span>Stan</span>.”</span> <a href="https://mc-stan.org/rstanarm/">https://mc-stan.org/rstanarm/</a>.
+</div>
+<div id="ref-invgamma" class="csl-entry" role="listitem">
+Kahle, David, and James Stamey. 2017. <em>Invgamma: The Inverse Gamma Distribution</em>. <a href="https://CRAN.R-project.org/package=invgamma">https://CRAN.R-project.org/package=invgamma</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Illustrative Examples in practice.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Illustrative Examples in practice</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./Bayesian Estimation to Nonlinear Regression Problem.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Bayesian Estimation to Nonlinear Regression Problem</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
