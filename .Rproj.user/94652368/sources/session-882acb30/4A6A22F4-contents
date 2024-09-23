@@ -1,7 +1,0 @@
-# Preface {.unnumbered}
-
-Bayesian statistical methods are becoming increasingly popular across all branches of science. With the rapid development of statistical software, Bayesian computations are now accessible to researchers across various domains. These methods are routinely used by practitioners in both industry and academia. However, with the growing availability of software and packages, the fundamental understanding of Bayesian estimation is sometimes compromised.
-
-In this document, we aim to bridge that gap by offering a clear understanding of the Bayesian principles through practical examples and case studies. By simulating data and comparing Bayesian estimates with likelihood-based estimates, we focus on the core concept of bias-variance decomposition of the mean square error (MSE) when evaluating estimators.
-
-This work is the outcome of a series of lectures delivered by the author, Amiya Ranjan Bhowmick, during the summer vacation of 2018 at the Institute of Chemical Technology (ICT), Mumbai. This document would be incomplete without acknowledging the influence of two exceptional books: `Statistical Inference` [@casella_berger_2002] and `All of Statistics` [@wasserman_2004]. These texts provided the foundation for much of the material discussed, and it would have been impossible to develop this work without their insights. We studied many examples and exercises from these books and have put our understanding into words here. And, certainly mistake is a part of our life. We would be grateful if the mistakes are informed to us.
