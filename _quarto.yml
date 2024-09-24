@@ -18,6 +18,12 @@ book:
   sharing: [twitter, linkedin]
   date-format: long
   reader-mode: true
+  page-footer:
+    left: |
+      Introduction to Bayesian Computing was written by Dipali Vasudev Mestry <a href="mailto:dipalimestry96@gmail.com">(dipalimestry96@gmail.com)</a>, and Amiya Ranjan Bhowmick <a href="mailto:amiyaiitb@gmail.com">(amiyaiitb@gmail.com)</a>/ <a href="mailto:ar.bhowmick@ictmumbai.edu.in">(ar.bhowmick@ictmumbai.edu.in)</a>..
+    right: |
+      This book was built with <a href="https://quarto.org/">Quarto</a>.
+      
   chapters:
     - index.qmd
     - intro.qmd
