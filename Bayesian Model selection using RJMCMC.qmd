@@ -109,7 +109,7 @@ For selection of the best model, we compute the posterior model probabilities, w
 \begin{equation}
     \frac{p(M_i| \mbox{data})}{p(M_j| \mbox{data})} = B_{ij} \frac{p(M_i)}{p(M_j)},
 \end{equation}
-where $p(M_k)'s$ are model prior probabilities with $p(M_1) + p(M_2) + p(M_3) = 1$ and Bayes factor $B_{ij}$ is the ratio of the marginal likelihood of $M_i$ and $M_j$. Large value $B_{ij}$ indicates stronger evidence for model $M_i$ against model $M_j$. For this purpose, we used the (give reference of Barker and Link(2013)) suggeted version of RJMCMC algorithm which is implemented via Gibbs sampling. This version of RJMCMC algorithm is based on the introduction of a universal parameter($\psi$), where $$\dim(\psi)\geq \max \{\dim(\theta_k)\},~ k = 1,2,3.$$
+where $p(M_k)'s$ are model prior probabilities with $p(M_1) + p(M_2) + p(M_3) = 1$ and Bayes factor $B_{ij}$ is the ratio of the marginal likelihood of $M_i$ and $M_j$. Large value $B_{ij}$ indicates stronger evidence for model $M_i$ against model $M_j$. For this purpose, we used the (give reference of Barker and Link(2013)) suggested version of RJMCMC algorithm which is implemented via Gibbs sampling. This version of RJMCMC algorithm is based on the introduction of a universal parameter($\psi$), where $$\dim(\psi)\geq \max \{\dim(\theta_k)\},~ k = 1,2,3.$$
 We take vector $\psi = (\psi_1,\psi_2,\psi_3,\psi_4,\psi_5)$ of dimension 5. Calculation of posterior model probabilities requires a bijection map and its inverse map specified between parameter space $\theta_i$ of each model and universal parameter $\psi$. For defining the one-to-one correspondence using bijection map, there is need to match the dimensions of $\psi$ and model parameter space $\theta_i$. Hence, we define augmenting variables $u_1 = (u_{11}, u_{12})$ and $u_2$ such that $\dim((\theta_1, u_1)) = \dim((\theta_2, u_2)) = \dim(\theta_3) = \dim(\psi)$.
 Three bijection maps and their inverse map is needed for implementation of RJMCMC algorithm. Graphical representation of transitions between parameter spaces and universal parameter $\psi$ using bijection map and their inverse map is depicted in following figure;
 
@@ -137,7 +137,7 @@ g3 = function(psi){
 ginv3 = function(theta){
   return(psi = theta)
 }
-
+# 
 ```
 
 
