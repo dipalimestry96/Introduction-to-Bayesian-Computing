@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Bayesian Computing - 2&nbsp; Illustrative Examples in practice</title>
+<title>2&nbsp; Illustrative Examples in practice – Introduction to Bayesian Computing</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -58,6 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -100,7 +101,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -109,13 +116,42 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -126,12 +162,12 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Illustrative Examples in practice.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Illustrative Examples in practice</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./Illustrative Examples in practice.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Illustrative Examples in practice</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -141,40 +177,40 @@ div.csl-indent {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Introduction to Bayesian Computing</a> 
         <div class="sidebar-tools-main tools-wide">
     <div class="dropdown">
-      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download"><i class="bi bi-download"></i></a>
+      <a href="" title="Download" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Download"><i class="bi bi-download"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="./Introduction-to-Bayesian-Computing.pdf">
-              <i class="bi bi-bi-file-pdf pe-1"></i>
+              <i class="bi bi-file-pdf pe-1"></i>
             Download PDF
             </a>
           </li>
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="./Introduction-to-Bayesian-Computing.epub">
-              <i class="bi bi-bi-journal pe-1"></i>
+              <i class="bi bi-journal pe-1"></i>
             Download ePub
             </a>
           </li>
       </ul>
     </div>
     <div class="dropdown">
-      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-1">
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
-              <i class="bi bi-bi-twitter pe-1"></i>
+              <i class="bi bi-twitter pe-1"></i>
             Twitter
             </a>
           </li>
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
-              <i class="bi bi-bi-linkedin pe-1"></i>
+              <i class="bi bi-linkedin pe-1"></i>
             LinkedIn
             </a>
           </li>
@@ -233,8 +269,14 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./Bayesian Model selection using RJMCMC.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Bayesian Model selection using Reversible Jump Markov Chain Monte Carlo(RJMCMC)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Conclusion</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -246,7 +288,7 @@ div.csl-indent {
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -280,7 +322,9 @@ div.csl-indent {
   </div>
   
 
+
 </header>
+
 
 <p>In this chapter, we will explore five commonly used examples in Bayesian inference. Each example is designed to show, step-by-step, how to calculate the posterior distribution, find the Bayesian estimate of the parameter, and compute the Mean Square Error (MSE) of the estimate.</p>
 <p>These examples have been selected to clearly demonstrate how Bayesian methods work in practice for teaching purposes. By following these examples, one can gain a better understanding of how to apply Bayesian techniques and assess the accuracy of the estimates. The detailed calculations and used codes are included to make learning easier and more practical.</p>
@@ -329,16 +373,20 @@ div.csl-indent {
    &amp;=&amp; \mbox{Var}_{\lambda}\left(\frac{\beta(Y+\alpha)}{n\beta +1}\right) + \left(\mbox{E}_{\lambda}\left(\frac{\beta(Y+\alpha)}{n\beta +1}\right)-\lambda\right)^2\\
    &amp;=&amp; \frac{\beta^2 n\lambda}{(n\beta+1)^2} + \frac{(\alpha \beta -\lambda)^2}{(n\beta+1)^2}.
 \end{eqnarray*}\]</span>
-<p>For fixed <span class="math inline">\(n\)</span>, the above quantity will be minimum if <span class="math inline">\(\alpha\beta = \lambda\)</span>, that is the prior mean is equal to the true value. However, in general, MSE is a function of the parameter. So, it is highly unlikely that we would end up with a single estimator which is the best for all parameter values. In general the MSEs of two estimators cross each other. This demonstrates that one estimator is better with respect to another estimator in only a portion of the parameter space. Now let us delve deep further in comparing the above two estimators. If <span class="math inline">\(\lambda = \alpha \beta\)</span>, then for large <span class="math inline">\(n\)</span>, <span class="math display">\[\mbox{MSE}_{\lambda}(\hat{\lambda}_B)  = \frac{\beta^2 n\lambda}{(n\beta+1)^2} = \frac{\beta^2n\lambda}{n^2\beta^2\left(1+\frac{1}{n\beta}\right)^2} \approx \frac{\lambda}{n}.\]</span> Thus, if the prior is chosen in a such way (choice of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>) so that the prior mean is close to the true value, then both the estimators have same variance approximately, for large <span class="math inline">\(n\)</span>. This observation is depicted in <a href="#fig-mse_pois">Figure&nbsp;<span>2.1</span></a>. We consider the values of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> to be <span class="math inline">\(4\)</span> and <span class="math inline">\(\frac{1}{2}\)</span>, respectively, so that the prior mean is <span class="math inline">\(\alpha \beta =2\)</span>. It is clear from the figure that if prior mean is close to the true value, then <span class="math inline">\(\hat{\lambda}_B\)</span> performs better than <span class="math inline">\(\hat{\lambda}\)</span>. If the prior mean is much away from the true value, then <span class="math inline">\(\hat{\lambda}\)</span> performs better than <span class="math inline">\(\hat{\lambda}_B\)</span>. However, for large sample size (<span class="math inline">\(n\to \infty\)</span>) both the estimators have same MSE.</p>
-<div id="fig-mse_pois" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="./Chapter 2_Illustrative Examples in practice_Figures/MSE_Poisson.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.1: MSE of <span class="math inline">\(\hat{\lambda}=\overline{X}\)</span> and <span class="math inline">\(\hat{\lambda}_B\)</span> at different values of <span class="math inline">\(\lambda\)</span> for different choices of the sample size, <span class="math inline">\(n\)</span>. The prior distribution of <span class="math inline">\(\lambda\)</span> is chosen as gamma(4, <span class="math inline">\(\frac{1}{2}\)</span>). The prior mean is 2 and is indicated by a black dot. For small sample size <span class="math inline">\(n=10\)</span>, the <span class="math inline">\(\mbox{MSE}_{\lambda}(\hat{\lambda}_B)\)</span> is lower than the <span class="math inline">\(\mbox{MSE}_{\lambda}(\hat{\lambda})\)</span> for all true values of <span class="math inline">\(\lambda\)</span> in a neighborhood of <span class="math inline">\(2\)</span>. As <span class="math inline">\(\lambda\)</span> increases, after a certain value, <span class="math inline">\(\mbox{MSE}_{\lambda}(\hat{\lambda})\)</span> crosses the MSE of <span class="math inline">\(\hat{\lambda}\)</span>. The same is observed for very small values of <span class="math inline">\(\lambda\)</span>. However, for large <span class="math inline">\(n\)</span> values, the MSE of both the estimators merges, essentially the prior information becomes redundant (<span class="math inline">\(n = 50\)</span>).</figcaption>
+<p>For fixed <span class="math inline">\(n\)</span>, the above quantity will be minimum if <span class="math inline">\(\alpha\beta = \lambda\)</span>, that is the prior mean is equal to the true value. However, in general, MSE is a function of the parameter. So, it is highly unlikely that we would end up with a single estimator which is the best for all parameter values. In general the MSEs of two estimators cross each other. This demonstrates that one estimator is better with respect to another estimator in only a portion of the parameter space. Now let us delve deep further in comparing the above two estimators. If <span class="math inline">\(\lambda = \alpha \beta\)</span>, then for large <span class="math inline">\(n\)</span>, <span class="math display">\[\mbox{MSE}_{\lambda}(\hat{\lambda}_B)  = \frac{\beta^2 n\lambda}{(n\beta+1)^2} = \frac{\beta^2n\lambda}{n^2\beta^2\left(1+\frac{1}{n\beta}\right)^2} \approx \frac{\lambda}{n}.\]</span> Thus, if the prior is chosen in a such way (choice of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>) so that the prior mean is close to the true value, then both the estimators have same variance approximately, for large <span class="math inline">\(n\)</span>. This observation is depicted in <a href="#fig-mse_pois" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-mse_pois</span></a>. We consider the values of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> to be <span class="math inline">\(4\)</span> and <span class="math inline">\(\frac{1}{2}\)</span>, respectively, so that the prior mean is <span class="math inline">\(\alpha \beta =2\)</span>. It is clear from the figure that if prior mean is close to the true value, then <span class="math inline">\(\hat{\lambda}_B\)</span> performs better than <span class="math inline">\(\hat{\lambda}\)</span>. If the prior mean is much away from the true value, then <span class="math inline">\(\hat{\lambda}\)</span> performs better than <span class="math inline">\(\hat{\lambda}_B\)</span>. However, for large sample size (<span class="math inline">\(n\to \infty\)</span>) both the estimators have same MSE.</p>
+<div id="fig-mse_pois" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mse_pois-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./Chapter 2_Illustrative Examples in practice_Figures/MSE_Poisson.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mse_pois-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.1: MSE of <span class="math inline">\(\hat{\lambda}=\overline{X}\)</span> and <span class="math inline">\(\hat{\lambda}_B\)</span> at different values of <span class="math inline">\(\lambda\)</span> for different choices of the sample size, <span class="math inline">\(n\)</span>. The prior distribution of <span class="math inline">\(\lambda\)</span> is chosen as gamma(4, <span class="math inline">\(\frac{1}{2}\)</span>). The prior mean is 2 and is indicated by a black dot. For small sample size <span class="math inline">\(n=10\)</span>, the <span class="math inline">\(\mbox{MSE}_{\lambda}(\hat{\lambda}_B)\)</span> is lower than the <span class="math inline">\(\mbox{MSE}_{\lambda}(\hat{\lambda})\)</span> for all true values of <span class="math inline">\(\lambda\)</span> in a neighborhood of <span class="math inline">\(2\)</span>. As <span class="math inline">\(\lambda\)</span> increases, after a certain value, <span class="math inline">\(\mbox{MSE}_{\lambda}(\hat{\lambda})\)</span> crosses the MSE of <span class="math inline">\(\hat{\lambda}\)</span>. The same is observed for very small values of <span class="math inline">\(\lambda\)</span>. However, for large <span class="math inline">\(n\)</span> values, the MSE of both the estimators merges, essentially the prior information becomes redundant (<span class="math inline">\(n = 50\)</span>).
+</figcaption>
 </figure>
 </div>
-<p>We have seen that the posterior mean is a linear combination of prior mean and the sample mean. Basically, the Bayesian estimate lies between the sample mean and prior mean. That is, the linear combination is in fact a convex combination. This can also be better visualized if we plot the three distributions in a single plot window, viz.&nbsp;the data histogram, prior distribution, posterior distribution (<a href="#fig-average">Figure&nbsp;<span>2.2</span></a>).</p>
-<p><strong>R Code for <a href="#fig-mse_pois">Figure&nbsp;<span>2.1</span></a></strong></p>
-<div class="cell" data-hash="Illustrative-Examples-in-practice_cache/html/unnamed-chunk-1_8e3d47a398a75fe8e19267d2140cf135">
+<p>We have seen that the posterior mean is a linear combination of prior mean and the sample mean. Basically, the Bayesian estimate lies between the sample mean and prior mean. That is, the linear combination is in fact a convex combination. This can also be better visualized if we plot the three distributions in a single plot window, viz.&nbsp;the data histogram, prior distribution, posterior distribution (<a href="#fig-average" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-average</span></a>).</p>
+<p><strong>R Code for <a href="#fig-mse_pois" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-mse_pois</span></a></strong></p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">4</span>; beta <span class="ot">=</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span>;</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">=</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="dv">50</span>)</span>
@@ -356,14 +404,18 @@ div.csl-indent {
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">points</span>(alpha<span class="sc">*</span>beta, <span class="dv">0</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">pch=</span><span class="dv">20</span>, <span class="at">cex=</span><span class="dv">2</span>)</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="fig-average" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="./Chapter 2_Illustrative Examples in practice_Figures/average_density.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.2: A sample of size <span class="math inline">\(n = 5\)</span> were simulated from the Poisson distribution with parameter <span class="math inline">\(\lambda =2\)</span> and the sample mean has been computed. The process has been replicated 100 times to obtain the sampling distribution of the sample meanand approximated by a kernel density estimator (magenta colour). The maximum likelihood estimate of <span class="math inline">\(\lambda\)</span> is denoted by magenta coloured `*’. Similarly exact prior density and exact posterior density functions are plotted using blue and red colour, respectively. Similarly the prior mean and posterior mean values are also marked. The depicted picture clearly verifies the theoretical calculations performed in the text.</figcaption>
+<div id="fig-average" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-average-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./Chapter 2_Illustrative Examples in practice_Figures/average_density.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-average-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.2: A sample of size <span class="math inline">\(n = 5\)</span> were simulated from the Poisson distribution with parameter <span class="math inline">\(\lambda =2\)</span> and the sample mean has been computed. The process has been replicated 100 times to obtain the sampling distribution of the sample meanand approximated by a kernel density estimator (magenta colour). The maximum likelihood estimate of <span class="math inline">\(\lambda\)</span> is denoted by magenta coloured `*’. Similarly exact prior density and exact posterior density functions are plotted using blue and red colour, respectively. Similarly the prior mean and posterior mean values are also marked. The depicted picture clearly verifies the theoretical calculations performed in the text.
+</figcaption>
 </figure>
 </div>
-<p><strong>R Code for <a href="#fig-average">Figure&nbsp;<span>2.2</span></a></strong></p>
-<div class="cell" data-hash="Illustrative-Examples-in-practice_cache/html/unnamed-chunk-2_c3fe4b2649040856fc3b9d8dddfc473e">
+<p><strong>R Code for <a href="#fig-average" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-average</span></a></strong></p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sampling distribution of sample mean</span></span>
@@ -442,24 +494,32 @@ div.csl-indent {
   &amp;=&amp; \frac{\tau^4 n\sigma^2}{(\sigma^2 +n\tau^2)^2} + \left(\frac{(\mu-\theta)\sigma^2}{\sigma^2 +n\tau^2}\right)^2\\
   &amp;=&amp; \frac{\sigma^2}{\left(\sigma^2+n\tau^2 \right)^2}\cdot\left(n\tau^4 + (\mu-\theta)^2\sigma^2\right).
 \end{eqnarray*}\]</span>
-<p>The estimators <span class="math inline">\(\hat{\theta}_B\)</span> and <span class="math inline">\(\overline{X}\)</span> are compared for different sample sizes and also for different choices of the prior variance <span class="math inline">\(\tau^2\)</span> (<a href="Bayesian Estimation to Nonlinear Regression Problem.html#fig-1">Figure&nbsp;<span>4.2 (a)</span></a> and <a href="Bayesian Estimation to Nonlinear Regression Problem.html#fig-2">Figure&nbsp;<span>4.2 (b)</span></a>). The estimator can also be compared by using the relative efficiency, which is defined as the MSE of the two estimators. So the efficiency of <span class="math inline">\(\hat{\theta}_B\)</span> relative to <span class="math inline">\(\overline{X}\)</span>, <span class="math inline">\(\mbox{eff}_{\theta}(\hat{\theta}_B|\overline{X})\)</span>, is</p>
+<p>The estimators <span class="math inline">\(\hat{\theta}_B\)</span> and <span class="math inline">\(\overline{X}\)</span> are compared for different sample sizes and also for different choices of the prior variance <span class="math inline">\(\tau^2\)</span> (<a href="#fig-1" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-1</span></a> and <a href="#fig-2" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-2</span></a>). The estimator can also be compared by using the relative efficiency, which is defined as the MSE of the two estimators. So the efficiency of <span class="math inline">\(\hat{\theta}_B\)</span> relative to <span class="math inline">\(\overline{X}\)</span>, <span class="math inline">\(\mbox{eff}_{\theta}(\hat{\theta}_B|\overline{X})\)</span>, is</p>
 <p><span class="math display">\[\begin{equation*}
     \frac{\mbox{MSE}_{\theta}(\hat{\theta}_B)}{\mbox{MSE}_{\theta}(\overline{X})} = \frac{n\tau^4 + (\mu-\theta)^2\sigma^2}{\left( \sigma^2 + n\tau^2\right)^2}.
 \end{equation*}\]</span> If <span class="math inline">\(\mu = \theta\)</span>, for a given sample size <span class="math inline">\(n\)</span>, relative efficiency is minimum and less than 1. Hence, <span class="math inline">\(\hat{\theta}_B\)</span> is more efficient than <span class="math inline">\(\overline{X}\)</span> for any given <span class="math inline">\(n\)</span>. If we move <span class="math inline">\(\theta\)</span> values away from <span class="math inline">\(\mu\)</span>, then <span class="math inline">\(\mbox{eff}_{\theta}(\hat{\theta}_B|\overline{X})\)</span> crosses the line <span class="math inline">\(y=1\)</span>. For theta values beyond that point, <span class="math inline">\(\overline{X}\)</span> is better than <span class="math inline">\(\hat{\theta}_B\)</span>. We encourage the reader to draw this picture and compare two estimators based on the relative efficiency. It is clearly understood that, essentially we are describing the same thing, only with a different graphical representation. Of course, the function <span class="math inline">\(\texttt{curve}\)</span> from <span class="math inline">\(\texttt{R}\)</span> is a very useful tool, which has been utilized throughout this material.</p>
-<div id="fig-1" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="./Chapter 2_Illustrative Examples in practice_Figures/MSE_theta_normal.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.3: <span class="math inline">\(\mbox{MSE}_{\theta}(\hat{\theta})\)</span> and <span class="math inline">\(\mbox{MSE}_{\theta}(\hat{\theta}_B)\)</span> are plotted as a function of <span class="math inline">\(\theta\)</span> for different sample size <span class="math inline">\(n\)</span>. The prior distribution of <span class="math inline">\(\theta\)</span> is considered to be <span class="math inline">\(\mathcal{N}(\mu=3, \tau^2=0.5)\)</span>. The prior mean <span class="math inline">\(\mu\)</span> is indicated by a black dot. For sample size, <span class="math inline">\(n=4\)</span>, <span class="math inline">\(\mbox{MSE}_{\theta}(\hat{\theta}_B)\)</span> is smaller than <span class="math inline">\(\mbox{MSE}_{\theta}(\hat{\theta})\)</span> at all values of <span class="math inline">\(\theta\)</span> in a neighborhood of <span class="math inline">\(\mu\)</span>. As we move away from <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\hat{\theta}\)</span> is more preferable outsize the neighborhood of <span class="math inline">\(\mu\)</span>. However, as we increase <span class="math inline">\(n\)</span>, MSE of both the estimators become closer in every neighborhood of <span class="math inline">\(\mu\)</span> (<span class="math inline">\(n=20\)</span>), reducing the impact of prior information.</figcaption>
+<div id="fig-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./Chapter 2_Illustrative Examples in practice_Figures/MSE_theta_normal.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.3: <span class="math inline">\(\mbox{MSE}_{\theta}(\hat{\theta})\)</span> and <span class="math inline">\(\mbox{MSE}_{\theta}(\hat{\theta}_B)\)</span> are plotted as a function of <span class="math inline">\(\theta\)</span> for different sample size <span class="math inline">\(n\)</span>. The prior distribution of <span class="math inline">\(\theta\)</span> is considered to be <span class="math inline">\(\mathcal{N}(\mu=3, \tau^2=0.5)\)</span>. The prior mean <span class="math inline">\(\mu\)</span> is indicated by a black dot. For sample size, <span class="math inline">\(n=4\)</span>, <span class="math inline">\(\mbox{MSE}_{\theta}(\hat{\theta}_B)\)</span> is smaller than <span class="math inline">\(\mbox{MSE}_{\theta}(\hat{\theta})\)</span> at all values of <span class="math inline">\(\theta\)</span> in a neighborhood of <span class="math inline">\(\mu\)</span>. As we move away from <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\hat{\theta}\)</span> is more preferable outsize the neighborhood of <span class="math inline">\(\mu\)</span>. However, as we increase <span class="math inline">\(n\)</span>, MSE of both the estimators become closer in every neighborhood of <span class="math inline">\(\mu\)</span> (<span class="math inline">\(n=20\)</span>), reducing the impact of prior information.
+</figcaption>
 </figure>
 </div>
-<div id="fig-2" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="./Chapter 2_Illustrative Examples in practice_Figures/MSE_theta_tau.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.4: The MSE of the two estimators are compared at different values of <span class="math inline">\(\tau^2\)</span>. For small sample size (<span class="math inline">\(n=4\)</span>) and small <span class="math inline">\(\tau^2 &lt;\sigma^2\)</span>, <span class="math inline">\(\hat{\theta}_B\)</span> performs better that <span class="math inline">\(\hat{\theta}\)</span>. For large values of <span class="math inline">\(\tau^2 &gt; \sigma^2\)</span>, <span class="math inline">\(\mbox{MSE}_{\theta}(\hat{\theta}_B)\)</span> increases. Basically, prior information becomes vague for large <span class="math inline">\(\tau^2\)</span> values. As expected, for large sample size <span class="math inline">\((n=20)\)</span> both the estimators perform at par irrespective of the prior variance.</figcaption>
+<div id="fig-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./Chapter 2_Illustrative Examples in practice_Figures/MSE_theta_tau.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.4: The MSE of the two estimators are compared at different values of <span class="math inline">\(\tau^2\)</span>. For small sample size (<span class="math inline">\(n=4\)</span>) and small <span class="math inline">\(\tau^2 &lt;\sigma^2\)</span>, <span class="math inline">\(\hat{\theta}_B\)</span> performs better that <span class="math inline">\(\hat{\theta}\)</span>. For large values of <span class="math inline">\(\tau^2 &gt; \sigma^2\)</span>, <span class="math inline">\(\mbox{MSE}_{\theta}(\hat{\theta}_B)\)</span> increases. Basically, prior information becomes vague for large <span class="math inline">\(\tau^2\)</span> values. As expected, for large sample size <span class="math inline">\((n=20)\)</span> both the estimators perform at par irrespective of the prior variance.
+</figcaption>
 </figure>
 </div>
-<p><strong>R Code for <a href="Bayesian Estimation to Nonlinear Regression Problem.html#fig-1">Figure&nbsp;<span>4.2 (a)</span></a> and <a href="Bayesian Estimation to Nonlinear Regression Problem.html#fig-2">Figure&nbsp;<span>4.2 (b)</span></a></strong></p>
-<div class="cell" data-hash="Illustrative-Examples-in-practice_cache/html/unnamed-chunk-3_06eccd75cd60034bd6b9cc8f65412407">
+<p><strong>R Code for <a href="#fig-1" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-1</span></a> and <a href="#fig-2" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-2</span></a></strong></p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="dv">1</span>)     <span class="co"># population sd, known</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">=</span> <span class="dv">3</span>              <span class="co"># prior mean value</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>tau <span class="ot">=</span> <span class="fu">sqrt</span>(<span class="fl">0.5</span>)     <span class="co"># prior sd</span></span>
@@ -534,14 +594,18 @@ div.csl-indent {
 &amp;=&amp;\mbox{Var}_p\left(\frac{Y+\alpha}{\alpha+\beta+n}\right) + \left(\mbox{E}_p\left(\frac{Y+\alpha}{\alpha+\beta+n}\right)-p\right)^2\\
 &amp;=&amp;\frac{np(1-p)}{(\alpha+\beta+n)^2} + \frac{\left(\alpha-p(\alpha+\beta)\right)^2}{(\alpha+\beta+n)^2}.
 \end{eqnarray*}\]</span>
-<div id="fig-mse_binom" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="./Chapter 2_Illustrative Examples in practice_Figures/MSE_Binomial.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.5: <span class="math inline">\(\mbox{MSE}_p(\hat{p})=\mbox{MSE}_p(\overline{X}) = \frac{p(1 - p)}{n}\)</span> and <span class="math inline">\(\mbox{MSE}_p(\hat{p}_B) =\frac{np(1 - p) + \left[\alpha - p(\alpha+\beta)\right]^2}{\left(\alpha+\beta+n\right)^2}\)</span> are computed based on simulated data from a <span class="math inline">\(\mbox{Bin}(n,p)\)</span> distribution. The prior distribution <span class="math inline">\(\pi(p)\)</span> is assumed to be <span class="math inline">\(\mbox{Beta}(\alpha,\beta)\)</span>. Here we consider <span class="math inline">\(\alpha = \beta=\sqrt{\frac{n}{4}}\)</span> so that <span class="math inline">\(\mbox{MSE}(\hat{p}_B) = \frac{n}{4\left(n+\sqrt{n}\right)^2}\)</span>, which is constant for all values of <span class="math inline">\(p (0&lt;p&lt;1)\)</span>, for fixed <span class="math inline">\(n\)</span>. The computation was done for different sample sizes as depicted in the figure. At each value of <span class="math inline">\(p\)</span>, average MSEs of both the estimators were computed using 1000 replications. The MSEs are plotted against different values of <span class="math inline">\(p\)</span>. For small sample size <span class="math inline">\(n=4\)</span>, <span class="math inline">\(\hat{p_B}\)</span> has more precision in estimating the true proportion than <span class="math inline">\(\hat{p}\)</span> for almost all <span class="math inline">\(p\in (0,1)\)</span> except the values closer to 0 and 1, where <span class="math inline">\(\hat{p}\)</span> is better. However, as sample size increases, the interval in which <span class="math inline">\(\hat{p_B}\)</span> is better than <span class="math inline">\(\hat{p}\)</span> decreases substantially. For <span class="math inline">\(n=400\)</span>, <span class="math inline">\(\hat{p_B}\)</span> works better in a very small interval about 0.5.</figcaption>
+<div id="fig-mse_binom" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mse_binom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./Chapter 2_Illustrative Examples in practice_Figures/MSE_Binomial.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mse_binom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.5: <span class="math inline">\(\mbox{MSE}_p(\hat{p})=\mbox{MSE}_p(\overline{X}) = \frac{p(1 - p)}{n}\)</span> and <span class="math inline">\(\mbox{MSE}_p(\hat{p}_B) =\frac{np(1 - p) + \left[\alpha - p(\alpha+\beta)\right]^2}{\left(\alpha+\beta+n\right)^2}\)</span> are computed based on simulated data from a <span class="math inline">\(\mbox{Bin}(n,p)\)</span> distribution. The prior distribution <span class="math inline">\(\pi(p)\)</span> is assumed to be <span class="math inline">\(\mbox{Beta}(\alpha,\beta)\)</span>. Here we consider <span class="math inline">\(\alpha = \beta=\sqrt{\frac{n}{4}}\)</span> so that <span class="math inline">\(\mbox{MSE}(\hat{p}_B) = \frac{n}{4\left(n+\sqrt{n}\right)^2}\)</span>, which is constant for all values of <span class="math inline">\(p (0&lt;p&lt;1)\)</span>, for fixed <span class="math inline">\(n\)</span>. The computation was done for different sample sizes as depicted in the figure. At each value of <span class="math inline">\(p\)</span>, average MSEs of both the estimators were computed using 1000 replications. The MSEs are plotted against different values of <span class="math inline">\(p\)</span>. For small sample size <span class="math inline">\(n=4\)</span>, <span class="math inline">\(\hat{p_B}\)</span> has more precision in estimating the true proportion than <span class="math inline">\(\hat{p}\)</span> for almost all <span class="math inline">\(p\in (0,1)\)</span> except the values closer to 0 and 1, where <span class="math inline">\(\hat{p}\)</span> is better. However, as sample size increases, the interval in which <span class="math inline">\(\hat{p_B}\)</span> is better than <span class="math inline">\(\hat{p}\)</span> decreases substantially. For <span class="math inline">\(n=400\)</span>, <span class="math inline">\(\hat{p_B}\)</span> works better in a very small interval about 0.5.
+</figcaption>
 </figure>
 </div>
-<p><strong>R Code for <a href="#fig-mse_binom">Figure&nbsp;<span>2.5</span></a></strong></p>
-<div class="cell" data-hash="Illustrative-Examples-in-practice_cache/html/unnamed-chunk-4_ba5db0cdcf5b6db07f4e32f97942efbe">
+<p><strong>R Code for <a href="#fig-mse_binom" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-mse_binom</span></a></strong></p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>n_vals <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">400</span>)  <span class="co"># size of the sample</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>rep <span class="ot">=</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">4</span>   <span class="co"># number of replication</span></span>
@@ -633,8 +697,8 @@ l(\beta)=\sum_{i=1}^{n}\ln \binom{x_i +\alpha-1}{x_i}-n\alpha\ln(1+\beta)+\sum_{
 \end{equation*}\]</span></p>
 <p>Again with no surprise, <span class="math inline">\(\hat{\lambda_i}_B\)</span> is a linear combination of the prior mean and sample mean. In above, we estimate <span class="math inline">\(\lambda_i\)</span> using only single observation form <span class="math inline">\(\mbox{Poission}(\lambda_i),~ i=1,2,\cdots,n\)</span>. In the discussed example, we have assumed <span class="math inline">\(\alpha\)</span> to be known and <span class="math inline">\(\beta\)</span> unknown. However, it might happen that both <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are known. In such situation, both <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> may be estimated from the observed samples <span class="math inline">\(X_1,X_2,\cdots, X_n\)</span>, whose marginal distributions are iid <span class="math inline">\(\mbox{NB}\left(\alpha, \frac{1}{\beta+1}\right)\)</span>. The likelihood equations are given by</p>
 <p><span class="math display">\[\frac{\partial l(\alpha, \beta)}{\partial \alpha} = 0, ~ \frac{\partial l(\alpha, \beta)}{\partial \beta}=0,\]</span></p>
-<p>where the log-likelihood function <span class="math inline">\(l(\alpha, \beta)\)</span> is same as given in the equation <a href="#eq-log_lik_nb_ex4">Equation&nbsp;<span>2.4</span></a>. These maximization must be carried out using some numerical procedures, for example Newton Raphson method. The estimates and associated standard errors can be obtained using R. For example, the likelihood function can be passed in the <span class="math inline">\(\texttt{optim}\)</span> function or the function <span class="math inline">\(\texttt{fitdistr}\)</span>, available in the <span class="math inline">\(\texttt{MASS}\)</span> package <span class="citation" data-cites="MASS">(<a href="references.html#ref-MASS" role="doc-biblioref">Venables and Ripley 2002</a>)</span>, may be utilized. Sample code is given below:</p>
-<div class="cell" data-hash="Illustrative-Examples-in-practice_cache/html/unnamed-chunk-5_c5e96f5f4adc3bc4885b72dfd594a88c">
+<p>where the log-likelihood function <span class="math inline">\(l(\alpha, \beta)\)</span> is same as given in the equation <a href="#eq-log_lik_nb_ex4" class="quarto-xref">Equation&nbsp;<span class="quarto-unresolved-ref">eq-log_lik_nb_ex4</span></a>. These maximization must be carried out using some numerical procedures, for example Newton Raphson method. The estimates and associated standard errors can be obtained using R. For example, the likelihood function can be passed in the <span class="math inline">\(\texttt{optim}\)</span> function or the function <span class="math inline">\(\texttt{fitdistr}\)</span>, available in the <span class="math inline">\(\texttt{MASS}\)</span> package <span class="citation" data-cites="MASS">(<a href="#ref-MASS" role="doc-biblioref">Venables and Ripley 2002</a>)</span>, may be utilized. Sample code is given below:</p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> x <span class="ot">=</span> <span class="fu">rgamma</span>(<span class="at">n =</span> <span class="dv">50</span>, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">rate =</span> <span class="dv">3</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">library</span>(MASS)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> fit <span class="ot">=</span> <span class="fu">fitdistr</span>(<span class="at">x =</span> x, <span class="st">"gamma"</span>, <span class="at">lower =</span> <span class="fl">0.01</span>)</span>
@@ -709,8 +773,8 @@ f(z) &amp;=&amp; \int_{0}^{\infty}f(z|\lambda)\pi(\lambda) \mathrm{d}\lambda \\
 <p>Hence, the posterior distribution of <span class="math inline">\(\lambda\)</span>, <span class="math inline">\(\lambda|z\sim \mbox{gamma}\left(\alpha+n,(z+\frac{1}{\beta})^{-1}\right)\)</span>. So exact posterior mean <span class="math inline">\(\mbox{E}(\lambda|z)\)</span> is <span class="math display">\[\begin{equation*}
 \frac{\alpha+n}{z+\frac{1}{\beta}} = \frac{\alpha+n}{n\bar{y}+\frac{1}{\beta}}
 \end{equation*}\]</span> Now, we approximate the posterior mean of <span class="math inline">\(\lambda\)</span> using a Monte Carlo (MC) sample, given <span class="math inline">\(m\)</span> independent values drawn directly from <span class="math inline">\(\mbox{gamma}(\alpha+n,n\bar{y}+\frac{1}{\beta})\)</span> posterior distribution. Further, the accuracy of the monte carlo approximation is compared with respect to the exact posterior distribution. First of all, we generated <span class="math inline">\(y\)</span> of size <span class="math inline">\(n=50\)</span> from exponential distribution with parameter <span class="math inline">\(\lambda\)</span>, where <span class="math inline">\(\lambda\)</span> was generated from <span class="math inline">\(\mbox{gamma}(\alpha = 8,\beta = 4)\)</span> density function. To generate the independent values of <span class="math inline">\(\lambda\)</span> of the MC sample from the known posterior distribution the function <span class="math inline">\(\texttt{rgamma}\)</span> was utilized with posterior rate and shape parameter.</p>
-<p><strong>R Code for <a href="#fig-Bayes_sim_gamma">Figure&nbsp;<span>2.6</span></a></strong></p>
-<div class="cell" data-hash="Illustrative-Examples-in-practice_cache/html/unnamed-chunk-6_9a55f34c912cfe22592d631254f5e026">
+<p><strong>R Code for <a href="#fig-Bayes_sim_gamma" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-Bayes_sim_gamma</span></a></strong></p>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">50</span>                                          <span class="co"># sample size</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">=</span> <span class="dv">8</span>                                       <span class="co"># prior parameter</span></span>
@@ -731,17 +795,21 @@ f(z) &amp;=&amp; \int_{0}^{\infty}f(z|\lambda)\pi(\lambda) \mathrm{d}\lambda \\
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span><span class="st">"blue"</span>, <span class="at">add=</span><span class="cn">TRUE</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">points</span>(lambda, <span class="dv">0</span>, <span class="at">pch =</span> <span class="dv">19</span>,<span class="at">col =</span> <span class="st">"red"</span>, <span class="at">cex =</span> <span class="dv">2</span>)}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="fig-Bayes_sim_gamma" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="./Chapter 2_Illustrative Examples in practice_Figures/Bayes_sim_gamma.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.6: Histogram approximation of the posterior probability density of <span class="math inline">\(\lambda\)</span> for different posterior sample of size <span class="math inline">\(m\)</span>. Red dot indicates the exact posterior mean (given data). Blue colored curve represents the exact posterior density function.</figcaption>
+<div id="fig-Bayes_sim_gamma" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-Bayes_sim_gamma-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="./Chapter 2_Illustrative Examples in practice_Figures/Bayes_sim_gamma.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Bayes_sim_gamma-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.6: Histogram approximation of the posterior probability density of <span class="math inline">\(\lambda\)</span> for different posterior sample of size <span class="math inline">\(m\)</span>. Red dot indicates the exact posterior mean (given data). Blue colored curve represents the exact posterior density function.
+</figcaption>
 </figure>
 </div>
 </section>
 <section id="exercises" class="level2" data-number="2.6">
 <h2 data-number="2.6" class="anchored" data-anchor-id="exercises"><span class="header-section-number">2.6</span> Exercises</h2>
 <ol type="1">
-<li><p><span class="citation" data-cites="casella_berger_2002">(<a href="references.html#ref-casella_berger_2002" role="doc-biblioref">Casella and Berger 2002</a>)</span> If <span class="math inline">\(S^2\)</span> is the sample variance based on a sample of size <span class="math inline">\(n\)</span> from a normal population, we know that <span class="math inline">\((n-1)S^2/\sigma^2\)</span> has a <span class="math inline">\(\chi_{n-1}^2\)</span> distribution. The conjugate prior for <span class="math inline">\(\sigma^2\)</span> is the inverted gamma pdf, IG(<span class="math inline">\(\alpha, \beta\)</span>), given by, <span class="math display">\[\begin{equation*}
+<li><p><span class="citation" data-cites="casella_berger_2002">(<a href="#ref-casella_berger_2002" role="doc-biblioref">Casella and Berger 2002</a>)</span> If <span class="math inline">\(S^2\)</span> is the sample variance based on a sample of size <span class="math inline">\(n\)</span> from a normal population, we know that <span class="math inline">\((n-1)S^2/\sigma^2\)</span> has a <span class="math inline">\(\chi_{n-1}^2\)</span> distribution. The conjugate prior for <span class="math inline">\(\sigma^2\)</span> is the inverted gamma pdf, IG(<span class="math inline">\(\alpha, \beta\)</span>), given by, <span class="math display">\[\begin{equation*}
      \pi(\sigma^2) = \frac{1}{\Gamma(\alpha)\beta^{\alpha}}\frac{1}{\left(\sigma^2 \right)^{\alpha+1}}e^{-1/(\beta \sigma^2)},~~0&lt;\sigma^2 &lt;\infty,
    \end{equation*}\]</span> where <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are positive constants. Show that the posterior distribution of <span class="math inline">\(\sigma^2\)</span> is <span class="math display">\[\begin{equation*}
      \mbox{IG}\left(\alpha+\frac{n-1}{2}, \left[\frac{(n-1)S^2}{2} + \frac{1}{\beta}\right]^{-1}\right).
@@ -752,7 +820,7 @@ f(z) &amp;=&amp; \int_{0}^{\infty}f(z|\lambda)\pi(\lambda) \mathrm{d}\lambda \\
    f(x|\theta) &amp;=&amp; \theta x^{\theta - 1},~~~0 &lt; x&lt;1, \\
     &amp;=&amp; 0,~~~~~~~~\mbox{otherwise}.
 \end{eqnarray*}\]</span> Suppose also that the value of the parameter <span class="math inline">\(\theta\)</span> is unknown (<span class="math inline">\(\theta&gt;0\)</span>) and that the prior distribution of <span class="math inline">\(\theta\)</span> is <span class="math inline">\(\mbox{gamma}(\alpha, \beta)\)</span>, <span class="math inline">\(\alpha &gt;0\)</span> and <span class="math inline">\(\beta&gt;0\)</span>. Determine the posterior distribution of <span class="math inline">\(\theta\)</span> and hence obtain the Bayes estimator of <span class="math inline">\(\theta\)</span> under a squared error loss function.</p></li>
-<li><p><span class="citation" data-cites="casella_berger_2002">(<a href="references.html#ref-casella_berger_2002" role="doc-biblioref">Casella and Berger 2002</a>)</span> Suppose that we observe <span class="math inline">\(X_1, X_2,\cdots, X_n\)</span> where <span class="math display">\[\begin{eqnarray*}
+<li><p><span class="citation" data-cites="casella_berger_2002">(<a href="#ref-casella_berger_2002" role="doc-biblioref">Casella and Berger 2002</a>)</span> Suppose that we observe <span class="math inline">\(X_1, X_2,\cdots, X_n\)</span> where <span class="math display">\[\begin{eqnarray*}
 % \nonumber to remove numbering (before each equation)
   X_i|\theta_i &amp;\sim &amp; \mathcal{N}(\theta_i, \sigma^2),~~i=1, 2,\cdots,n, ~~~\mbox{independent}\\
   \theta_i &amp;\sim &amp; \mathcal{N}(\mu,\tau^2),~~~i=1, 2,\cdots,n, ~~~\mbox{independent}
@@ -767,13 +835,13 @@ f(z) &amp;=&amp; \int_{0}^{\infty}f(z|\lambda)\pi(\lambda) \mathrm{d}\lambda \\
 \end{eqnarray*}\]</span> then <span class="math inline">\(X_1, X_2,\cdots,X_n\)</span> are iid.</li>
 </ul>
 <ol start="4" type="1">
-<li><p><span class="citation" data-cites="wasserman_2004">(<a href="references.html#ref-wasserman_2004" role="doc-biblioref">Wasserman 2004</a>)</span> Suppose that we observe <span class="math inline">\(X_1, X_2,\cdots, X_n\)</span> from <span class="math inline">\(\mathcal{\mu, 1}\)</span>. (a)Simulate a data set (using <span class="math inline">\(\mu=5\)</span>) consisting of <span class="math inline">\(n=100\)</span> observations. (b)Take <span class="math inline">\(\pi(\mu)=1\)</span> and find the posterior density and plot the density. (c)Simulate 1000 draws from the posterior and plot the histogram of the simulated values and compare the histogram to the answer in (b). (d)Let <span class="math inline">\(\theta= \exp(\mu)\)</span>, then find the posterior density for <span class="math inline">\(\theta\)</span> analytically and by simulation. (e)Obtain a 95 percent posterior interval for <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\theta\)</span>.</p></li>
-<li><p><span class="citation" data-cites="wasserman_2004">(<a href="references.html#ref-wasserman_2004" role="doc-biblioref">Wasserman 2004</a>)</span> Consider the Bernoulli(<span class="math inline">\(p\)</span>) observations: <span class="math display">\[0~1~0~1~0~0~0~0~0~0\]</span> Plot the posterior for <span class="math inline">\(p\)</span> using these prior distributions for <span class="math inline">\(p\)</span>: <span class="math inline">\(\mbox{beta}(1/2, 1/2)\)</span>, <span class="math inline">\(\mbox{beta}(10, 10)\)</span> and <span class="math inline">\(\mbox{beta}(100, 100)\)</span>.</p></li>
-<li><p><span class="citation" data-cites="wasserman_2004">(<a href="references.html#ref-wasserman_2004" role="doc-biblioref">Wasserman 2004</a>)</span> Let <span class="math inline">\(X_1, X_2,\cdots,X_n \sim \mbox{Poisson}(\lambda)\)</span>. Find the Jeffrey’s prior. Also, find the corresponding posterior density function.</p></li>
+<li><p><span class="citation" data-cites="wasserman_2004">(<a href="#ref-wasserman_2004" role="doc-biblioref">Wasserman 2004</a>)</span> Suppose that we observe <span class="math inline">\(X_1, X_2,\cdots, X_n\)</span> from <span class="math inline">\(\mathcal{\mu, 1}\)</span>. (a)Simulate a data set (using <span class="math inline">\(\mu=5\)</span>) consisting of <span class="math inline">\(n=100\)</span> observations. (b)Take <span class="math inline">\(\pi(\mu)=1\)</span> and find the posterior density and plot the density. (c)Simulate 1000 draws from the posterior and plot the histogram of the simulated values and compare the histogram to the answer in (b). (d)Let <span class="math inline">\(\theta= \exp(\mu)\)</span>, then find the posterior density for <span class="math inline">\(\theta\)</span> analytically and by simulation. (e)Obtain a 95 percent posterior interval for <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\theta\)</span>.</p></li>
+<li><p><span class="citation" data-cites="wasserman_2004">(<a href="#ref-wasserman_2004" role="doc-biblioref">Wasserman 2004</a>)</span> Consider the Bernoulli(<span class="math inline">\(p\)</span>) observations: <span class="math display">\[0~1~0~1~0~0~0~0~0~0\]</span> Plot the posterior for <span class="math inline">\(p\)</span> using these prior distributions for <span class="math inline">\(p\)</span>: <span class="math inline">\(\mbox{beta}(1/2, 1/2)\)</span>, <span class="math inline">\(\mbox{beta}(10, 10)\)</span> and <span class="math inline">\(\mbox{beta}(100, 100)\)</span>.</p></li>
+<li><p><span class="citation" data-cites="wasserman_2004">(<a href="#ref-wasserman_2004" role="doc-biblioref">Wasserman 2004</a>)</span> Let <span class="math inline">\(X_1, X_2,\cdots,X_n \sim \mbox{Poisson}(\lambda)\)</span>. Find the Jeffrey’s prior. Also, find the corresponding posterior density function.</p></li>
 </ol>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-casella_berger_2002" class="csl-entry" role="listitem">
 Casella, George, and Roger L. Berger. 2002. <em>Statistical Inference</em>. Second. Duxbury Advanced Series. India Edition: Cengage Learning.
 </div>
@@ -822,18 +890,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -865,11 +922,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -879,8 +975,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -892,7 +997,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -936,6 +1164,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -961,6 +1190,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -1022,12 +1277,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./intro.html" class="pagination-link">
+      <a href="./intro.html" class="pagination-link" aria-label="Introduction">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./Bayesian Estimation for Linear Regression Problem.html" class="pagination-link">
+      <a href="./Bayesian Estimation for Linear Regression Problem.html" class="pagination-link" aria-label="Bayesian Estimation for Linear Regression Problem">
         <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Bayesian Estimation for Linear Regression Problem</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -1035,13 +1290,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">Introduction to Bayesian Computing was written by Dipali Vasudev Mestry <a href="mailto:dipalimestry96@gmail.com">(dipalimestry96@gmail.com)</a>, and Amiya Ranjan Bhowmick <a href="mailto:amiyaiitb@gmail.com">(amiyaiitb@gmail.com)</a>/ <a href="mailto:ar.bhowmick@ictmumbai.edu.in">(ar.bhowmick@ictmumbai.edu.in)</a>..</div>   
+    <div class="nav-footer-left">
+<p>Introduction to Bayesian Computing was written by Dipali Vasudev Mestry <a href="mailto:dipalimestry96@gmail.com">(dipalimestry96@gmail.com)</a>, and Amiya Ranjan Bhowmick <a href="mailto:amiyaiitb@gmail.com">(amiyaiitb@gmail.com)</a>/ <a href="mailto:ar.bhowmick@ictmumbai.edu.in">(ar.bhowmick@ictmumbai.edu.in)</a>.</p>
+</div>   
     <div class="nav-footer-center">
       &nbsp;
     </div>
-    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+    <div class="nav-footer-right">
+<p>This book was built with <a href="https://quarto.org/">Quarto</a>.</p>
+</div>
   </div>
 </footer>
+
 
 
 

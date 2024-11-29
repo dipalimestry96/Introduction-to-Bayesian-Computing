@@ -20,7 +20,7 @@ book:
   reader-mode: true
   page-footer:
     left: |
-      Introduction to Bayesian Computing was written by Dipali Vasudev Mestry <a href="mailto:dipalimestry96@gmail.com">(dipalimestry96@gmail.com)</a>, and Amiya Ranjan Bhowmick <a href="mailto:amiyaiitb@gmail.com">(amiyaiitb@gmail.com)</a>/ <a href="mailto:ar.bhowmick@ictmumbai.edu.in">(ar.bhowmick@ictmumbai.edu.in)</a>..
+      Introduction to Bayesian Computing was written by Dipali Vasudev Mestry <a href="mailto:dipalimestry96@gmail.com">(dipalimestry96@gmail.com)</a>, and Amiya Ranjan Bhowmick <a href="mailto:amiyaiitb@gmail.com">(amiyaiitb@gmail.com)</a>/ <a href="mailto:ar.bhowmick@ictmumbai.edu.in">(ar.bhowmick@ictmumbai.edu.in)</a>.
     right: |
       This book was built with <a href="https://quarto.org/">Quarto</a>.
       
@@ -31,6 +31,7 @@ book:
     - Bayesian Estimation for Linear Regression Problem.qmd
     - Bayesian Estimation to Nonlinear Regression Problem.qmd
     - Bayesian connection to Statistical Regularization.qmd
+    - Bayesian Model selection using RJMCMC.qmd
     - summary.qmd
     - references.qmd
 bibliography: references.bib
